@@ -1,4 +1,4 @@
-package bstree;
+package com.company.datastructure;
 
 public class Main {
     public static void main(String[] args) {

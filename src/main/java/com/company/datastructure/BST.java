@@ -1,4 +1,4 @@
-package bstree;
+package com.company.datastructure;
 
 public class BST<T> {
     public BTNode root;
