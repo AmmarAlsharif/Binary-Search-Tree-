@@ -38,7 +38,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.progressoft.jip7.NoaaApp</mainClass>
+                            <mainClass>com.company.datastructure.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
