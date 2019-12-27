@@ -2,157 +2,54 @@ package com.company.datastructure;
 
 import java.util.ArrayList;
 
-public class BST<T> {
-    public BTNode root;
-    public int size;
 
-    public BST() { }
+public class BST<T extends Comparable> {
+    private BTNode root;
+
+    private int size;
 
     // add node to the tree
-    public void add(T e) {
-        BTNode n = new BTNode(e);
-        if (root == null)
-            root = n;
-        else {
-            if (e instanceof Integer) {
-                BTNode ptr = root;
-                while (ptr != null) {
-                    if ((Integer) n.data > (Integer) ptr.data) {
-                        if (ptr.right == null) break;
-                        ptr = ptr.right;
-                    } else {
-                        if (ptr.left == null) break;
-                        ptr = ptr.left;
-                    }
-                }
-                if ((Integer) n.data > (Integer) ptr.data) {
-                    ptr.right = n;
-                    n.parent = ptr;
-                } else {
-                    ptr.left = n;
-                    n.parent = ptr;
-                }
-            } else if (e instanceof Long) {
-                BTNode ptr = root;
-                while (ptr != null) {
-                    if ((Long) n.data > (Long) ptr.data) {
-                        if (ptr.right == null) break;
-                        ptr = ptr.right;
-                    } else {
-                        if (ptr.left == null) break;
-                        ptr = ptr.left;
-                    }
-                }
-                if ((Long) n.data > (Long) ptr.data) {
-                    ptr.right = n;
-                    n.parent = ptr;
-                } else {
-                    ptr.left = n;
-                    n.parent = ptr;
-                }
-            } else if (e instanceof Double) {
-                BTNode ptr = root;
-                while (ptr != null) {
-                    if ((Double) n.data > (Double) ptr.data) {
-                        if (ptr.right == null) break;
-                        ptr = ptr.right;
-                    } else {
-                        if (ptr.left == null) break;
-                        ptr = ptr.left;
-                    }
-                }
-                if ((Double) n.data > (Double) ptr.data) {
-                    ptr.right = n;
-                    n.parent = ptr;
-                } else {
-                    ptr.left = n;
-                    n.parent = ptr;
-                }
-            } else if (e instanceof Character) {
-                BTNode ptr = root;
-                while (ptr != null) {
-                    if ((Character) n.data > (Character) ptr.data) {
-                        if (ptr.right == null) break;
-                        ptr = ptr.right;
-                    } else {
-                        if (ptr.left == null) break;
-                        ptr = ptr.left;
-                    }
-                }
-                if ((Character) n.data > (Character) ptr.data) {
-                    ptr.right = n;
-                    n.parent = ptr;
-                } else {
-                    ptr.left = n;
-                    n.parent = ptr;
-                }
-            } else if (e instanceof String) {
-                BTNode ptr = root;
-                while (ptr != null) {
-                    if (((String) n.data).compareTo((String) ptr.data) > 0) {
-                        if (ptr.right == null) break;
-                        ptr = ptr.right;
-                    } else {
-                        if (ptr.left == null) break;
-                        ptr = ptr.left;
-                    }
-                }
-                if (((String) n.data).compareTo((String) ptr.data) > 0) {
-                    ptr.right = n;
-                    n.parent = ptr;
-                } else {
-                    ptr.left = n;
-                    n.parent = ptr;
-                }
+    public void add(T element) {
+        BTNode newNode = new BTNode(element);
+        if (root == null) {
+            root = newNode;
+            return;
+        }
+        BTNode pointer = root;
+        while (pointer != null) {
+            if (newNode.data.compareTo(pointer.data) > 0) {
+                if (pointer.right == null)
+                    break;
+                pointer = pointer.right;
+            } else {
+                if (pointer.left == null)
+                    break;
+                pointer = pointer.left;
             }
+        }
+        if (newNode.data.compareTo(pointer.data) > 0) {
+            pointer.right = newNode;
+            newNode.parent = pointer;
+        } else {
+            pointer.left = newNode;
+            newNode.parent = pointer;
         }
         size++;
     }
 
     // search for an element k in the tree
-    public boolean search(T k) {
-        class se { }
-        return new se() {
-            public boolean search(BTNode ptr, T k) {
-                if (k instanceof Integer) {
-                    if (ptr == null) return false;
-                    else if ((Integer) k - (Integer) ptr.data == 0) return true;
-                    if ((Integer) k < (Integer) ptr.data)
-                        return search(ptr.left, k);
-                    else
-                        return search(ptr.right, k);
-                } else if (k instanceof Long) {
-                    if (ptr == null) return false;
-                    else if ((Long) k - (Long) ptr.data == 0) return true;
-                    if ((Long) k < (Long) ptr.data)
-                        return search(ptr.left, k);
-                    else
-                        return search(ptr.right, k);
-                } else if (k instanceof Double) {
-                    if (ptr == null) return false;
-                    else if ((Double) k - (Double) ptr.data == 0) return true;
-                    if ((Double) k < (Double) ptr.data)
-                        return search(ptr.left, k);
-                    else
-                        return search(ptr.right, k);
-                } else if (k instanceof Character) {
-                    if (ptr == null) return false;
-                    else if ((Character) k - (Character) ptr.data == 0) return true;
-                    if ((Character) k < (Character) ptr.data)
-                        return search(ptr.left, k);
-                    else
-                        return search(ptr.right, k);
-                } else if (k instanceof String) {
-                    if (ptr == null) return false;
-                    else if (((String) k).compareTo((String) ptr.data) == 0) return true;
-                    if (((String) k).compareTo((String) ptr.data) < 0)
-                        return search(ptr.left, k);
-                    else
-                        return search(ptr.right, k);
-                }
-                return false;
-            }
-        }.search(root, k);
+    public boolean search(T element) {
+        return search(root, element);
+    }
+
+    private boolean search(BTNode root, T element) {
+        if (root == null)
+            return false;
+        if (element.compareTo(root.data) == 0)
+            return true;
+        if (element.compareTo(root.data) < 0)
+            return search(root.left, element);
+        return search(root.right, element);
     }
 
     // we need this function in successor function
@@ -190,8 +87,8 @@ public class BST<T> {
         }
         return null;
     }
-
     // find the minimum element in the tree
+
     public T min() {
         if (root == null) {
             System.out.println("The tree is empty");
@@ -205,8 +102,8 @@ public class BST<T> {
 
         }
     }
-
     // find the maximum element in the tree
+
     public T max() {
         if (root == null) {
             System.out.println("The tree is empty");
@@ -219,8 +116,8 @@ public class BST<T> {
             return (T) ptr.data;
         }
     }
-
     // find the successor element of x in the tree
+
     public T successor(T x) {
         T e = (T) "";
         if (root == null)
@@ -253,9 +150,9 @@ public class BST<T> {
         }
         return e;
     }
-
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
+
     private BTNode successorN(T x) {
         if (root == null) return null;
         else {
@@ -283,8 +180,8 @@ public class BST<T> {
             }
         }
     }
-
     // delete an element x from the tree
+
     public void delete(T x) {
         if (root == null) System.out.println("No elements to delete");
         else {
@@ -332,9 +229,9 @@ public class BST<T> {
             }
         }
     }
-
     // we need this method to delete the successor Node
     // of the node that has 2 children
+
     private void deleteN(BTNode ptr) {
         if (ptr.right == null) {
             ptr = ptr.parent;
@@ -350,10 +247,11 @@ public class BST<T> {
             }
         }
     }
-
     // preorder function
+
     public void preorder() {
-        class pre { }
+        class pre {
+        }
         new pre() {
             public void preorder(BTNode ptr) {
                 if (ptr == null) {
@@ -365,8 +263,8 @@ public class BST<T> {
             }
         }.preorder(root);
     }
-
     // inorder function
+
     public ArrayList<T> inorder() {
         ArrayList<T> orderedItems = new ArrayList<>();
         inorder(root, orderedItems);
@@ -383,8 +281,10 @@ public class BST<T> {
     }
 
     // postorder function
+
     public void postorder() {
-        class post { }
+        class post {
+        }
         new post() {
             public void postorder(BTNode ptr) {
                 if (ptr == null) {
@@ -397,11 +297,17 @@ public class BST<T> {
         }.postorder(root);
     }
 
+    public int size() {
+        return size;
+    }
+
     private class BTNode {
+
         private BTNode left;
         private BTNode right;
         private BTNode parent;
         private T data;
+
         private BTNode(T data) {
             this.data = data;
         }
