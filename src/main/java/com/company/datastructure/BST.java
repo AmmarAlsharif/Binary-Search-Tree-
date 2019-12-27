@@ -1,5 +1,7 @@
 package com.company.datastructure;
 
+import java.util.ArrayList;
+
 public class BST<T> {
     public BTNode root;
     public int size;
@@ -8,7 +10,7 @@ public class BST<T> {
 
     // add node to the tree
     public void add(T e) {
-        BTNode<T> n = new BTNode<>(e);
+        BTNode n = new BTNode(e);
         if (root == null)
             root = n;
         else {
@@ -365,18 +367,19 @@ public class BST<T> {
     }
 
     // inorder function
-    public void inorder() {
-        class in { }
-        new in() {
-            public void inorder(BTNode ptr) {
-                if (ptr == null) {
-                } else {
-                    inorder(ptr.left);
-                    System.out.print(ptr.data + " ");
-                    inorder(ptr.right);
-                }
-            }
-        }.inorder(root);
+    public ArrayList<T> inorder() {
+        ArrayList<T> orderedItems = new ArrayList<>();
+        inorder(root, orderedItems);
+        return orderedItems;
+    }
+
+    private void inorder(BTNode ptr, ArrayList<T> orderedItems) {
+        if (ptr == null) {
+        } else {
+            inorder(ptr.left, orderedItems);
+            orderedItems.add((T) ptr.data);
+            inorder(ptr.right, orderedItems);
+        }
     }
 
     // postorder function
@@ -392,5 +395,15 @@ public class BST<T> {
                 }
             }
         }.postorder(root);
+    }
+
+    private class BTNode {
+        private BTNode left;
+        private BTNode right;
+        private BTNode parent;
+        private T data;
+        private BTNode(T data) {
+            this.data = data;
+        }
     }
 }
