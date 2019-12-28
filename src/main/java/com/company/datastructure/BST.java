@@ -87,8 +87,8 @@ public class BST<T extends Comparable> {
         }
         return null;
     }
-    // find the minimum element in the tree
 
+    // find the minimum element in the tree
     public T min() {
         if (root == null) {
             System.out.println("The tree is empty");
@@ -99,11 +99,10 @@ public class BST<T extends Comparable> {
                 ptr = ptr.left;
             }
             return (T) ptr.data;
-
         }
     }
-    // find the maximum element in the tree
 
+    // find the maximum element in the tree
     public T max() {
         if (root == null) {
             System.out.println("The tree is empty");
@@ -116,8 +115,8 @@ public class BST<T extends Comparable> {
             return (T) ptr.data;
         }
     }
-    // find the successor element of x in the tree
 
+    // find the successor element of x in the tree
     public T successor(T x) {
         T e = (T) "";
         if (root == null)
@@ -150,9 +149,9 @@ public class BST<T extends Comparable> {
         }
         return e;
     }
+
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
-
     private BTNode successorN(T x) {
         if (root == null) return null;
         else {
@@ -180,8 +179,8 @@ public class BST<T extends Comparable> {
             }
         }
     }
-    // delete an element x from the tree
 
+    // delete an element x from the tree
     public void delete(T x) {
         if (root == null) System.out.println("No elements to delete");
         else {
@@ -198,7 +197,6 @@ public class BST<T extends Comparable> {
                         ptr2.left = null;
                     else
                         ptr2.right = null;
-
                 }
                 size--;
             } else if (ptr.left == null || ptr.right == null) {
@@ -229,9 +227,9 @@ public class BST<T extends Comparable> {
             }
         }
     }
+
     // we need this method to delete the successor Node
     // of the node that has 2 children
-
     private void deleteN(BTNode ptr) {
         if (ptr.right == null) {
             ptr = ptr.parent;
@@ -247,8 +245,8 @@ public class BST<T extends Comparable> {
             }
         }
     }
-    // preorder function
 
+    // preorder function
     public void preorder() {
         class pre {
         }
@@ -263,8 +261,8 @@ public class BST<T extends Comparable> {
             }
         }.preorder(root);
     }
-    // inorder function
 
+    // inorder function
     public ArrayList<T> inorder() {
         ArrayList<T> orderedItems = new ArrayList<>();
         inorder(root, orderedItems);
@@ -281,7 +279,6 @@ public class BST<T extends Comparable> {
     }
 
     // postorder function
-
     public void postorder() {
         class post {
         }

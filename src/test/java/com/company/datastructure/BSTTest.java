@@ -54,28 +54,28 @@ class BSTTest {
 
     @Test
     void givenCharacters_whenAdding_thenSuccess() {
-        BST<String> treeOfStrings = new BST<>();
-        treeOfStrings.add("A");
-        treeOfStrings.add("a");
-        treeOfStrings.add("b");
-        treeOfStrings.add("B");
-        treeOfStrings.add("c");
+        BST<Character> treeOfStrings = new BST<>();
+        treeOfStrings.add('A');
+        treeOfStrings.add('a');
+        treeOfStrings.add('b');
+        treeOfStrings.add('B');
+        treeOfStrings.add('c');
 
-        ArrayList<String> expectedOrderedStrings = new ArrayList<>();
-        expectedOrderedStrings.add("A");
-        expectedOrderedStrings.add("B");
-        expectedOrderedStrings.add("a");
-        expectedOrderedStrings.add("b");
-        expectedOrderedStrings.add("c");
+        ArrayList<Character> expectedOrderedStrings = new ArrayList<>();
+        expectedOrderedStrings.add('A');
+        expectedOrderedStrings.add('B');
+        expectedOrderedStrings.add('a');
+        expectedOrderedStrings.add('b');
+        expectedOrderedStrings.add('c');
 
-        ArrayList<String> actualOrderedStrings = treeOfStrings.inorder();
+        ArrayList<Character> actualOrderedStrings = treeOfStrings.inorder();
         assertNotNull(actualOrderedStrings);
         assertEquals(expectedOrderedStrings, actualOrderedStrings);
 
     }
 
     @Test
-    void givenIncludedIntegers_whenSearching_thenReturnAsExpected() {
+    void givenIncludedDoubles_whenSearching_thenReturnAsExpected() {
         BST<Double> treeOfDoubles = new BST<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
@@ -104,20 +104,20 @@ class BSTTest {
 
     @Test
     void givenIncludedCharacters_whenSearching_thenReturnAsExpected() {
-        BST<String> treeOfStrings = new BST<>();
-        treeOfStrings.add("A");
-        treeOfStrings.add("B");
-        treeOfStrings.add("a");
-        treeOfStrings.add("C");
-        assertTrue(treeOfStrings.search("A"));
-        assertTrue(treeOfStrings.search("B"));
-        assertTrue(treeOfStrings.search("a"));
-        assertTrue(treeOfStrings.search("C"));
+        BST<Character> treeOfStrings = new BST<>();
+        treeOfStrings.add('A');
+        treeOfStrings.add('B');
+        treeOfStrings.add('a');
+        treeOfStrings.add('C');
+        assertTrue(treeOfStrings.search('A'));
+        assertTrue(treeOfStrings.search('B'));
+        assertTrue(treeOfStrings.search('a'));
+        assertTrue(treeOfStrings.search('C'));
     }
 
 
     @Test
-    void givenExcludedInteger_whenSearching_thenReturnAsExpected() {
+    void givenExcludedDoubles_whenSearching_thenReturnAsExpected() {
         BST<Double> treeOfDoubles = new BST<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
@@ -139,11 +139,11 @@ class BSTTest {
 
     @Test
     void givenExcludedCharacters_whenSearching_thenReturnAsExpected() {
-        BST<String> treeOfStrings = new BST<>();
-        treeOfStrings.add("A");
-        treeOfStrings.add("B");
-        treeOfStrings.add("a");
-        treeOfStrings.add("C");
-        assertFalse(treeOfStrings.search("c"));
+        BST<Character> treeOfStrings = new BST<>();
+        treeOfStrings.add('A');
+        treeOfStrings.add('B');
+        treeOfStrings.add('a');
+        treeOfStrings.add('C');
+        assertFalse(treeOfStrings.search('c'));
     }
 }
