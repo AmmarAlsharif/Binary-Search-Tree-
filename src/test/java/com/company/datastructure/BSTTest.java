@@ -1,5 +1,6 @@
 package com.company.datastructure;
 
+import com.company.datastructure.exceptions.EmptyTreeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -82,11 +83,11 @@ class BSTTest {
         treeOfDoubles.add(-5.0);
         treeOfDoubles.add(10.0);
         treeOfDoubles.add(-11.2);
-        assertTrue(treeOfDoubles.search(2.3));
-        assertTrue(treeOfDoubles.search(5.2));
-        assertTrue(treeOfDoubles.search(10.0));
-        assertTrue(treeOfDoubles.search(-11.2));
-        assertTrue(treeOfDoubles.search(-5.0));
+        assertTrue(treeOfDoubles.contains(2.3));
+        assertTrue(treeOfDoubles.contains(5.2));
+        assertTrue(treeOfDoubles.contains(10.0));
+        assertTrue(treeOfDoubles.contains(-11.2));
+        assertTrue(treeOfDoubles.contains(-5.0));
     }
 
     @Test
@@ -96,10 +97,10 @@ class BSTTest {
         treeOfStrings.add("BA");
         treeOfStrings.add("CD");
         treeOfStrings.add("DC");
-        assertTrue(treeOfStrings.search("AB"));
-        assertTrue(treeOfStrings.search("BA"));
-        assertTrue(treeOfStrings.search("CD"));
-        assertTrue(treeOfStrings.search("DC"));
+        assertTrue(treeOfStrings.contains("AB"));
+        assertTrue(treeOfStrings.contains("BA"));
+        assertTrue(treeOfStrings.contains("CD"));
+        assertTrue(treeOfStrings.contains("DC"));
     }
 
     @Test
@@ -109,10 +110,10 @@ class BSTTest {
         treeOfStrings.add('B');
         treeOfStrings.add('a');
         treeOfStrings.add('C');
-        assertTrue(treeOfStrings.search('A'));
-        assertTrue(treeOfStrings.search('B'));
-        assertTrue(treeOfStrings.search('a'));
-        assertTrue(treeOfStrings.search('C'));
+        assertTrue(treeOfStrings.contains('A'));
+        assertTrue(treeOfStrings.contains('B'));
+        assertTrue(treeOfStrings.contains('a'));
+        assertTrue(treeOfStrings.contains('C'));
     }
 
 
@@ -124,7 +125,7 @@ class BSTTest {
         treeOfDoubles.add(-5.0);
         treeOfDoubles.add(10.0);
         treeOfDoubles.add(-11.2);
-        assertFalse(treeOfDoubles.search(1.0));
+        assertFalse(treeOfDoubles.contains(1.0));
     }
 
     @Test
@@ -134,7 +135,7 @@ class BSTTest {
         treeOfStrings.add("BA");
         treeOfStrings.add("CD");
         treeOfStrings.add("DC");
-        assertFalse(treeOfStrings.search("A"));
+        assertFalse(treeOfStrings.contains("A"));
     }
 
     @Test
@@ -144,6 +145,42 @@ class BSTTest {
         treeOfStrings.add('B');
         treeOfStrings.add('a');
         treeOfStrings.add('C');
-        assertFalse(treeOfStrings.search('c'));
+        assertFalse(treeOfStrings.contains('c'));
+    }
+
+    @Test
+    void givenEmptyTree_whenCallingMin_thenThrowException(){
+        BST<Integer> emptyTree = new BST<>();
+        assertThrows(EmptyTreeException.class, emptyTree::min);
+    }
+
+    @Test
+    void givenValidTree_whenCallingMin_thenReturnAsExpected(){
+        BST<Character> treeOfCharacters = new BST<>();
+        treeOfCharacters.add('b');
+        treeOfCharacters.add('C');
+        treeOfCharacters.add('g');
+        treeOfCharacters.add('b');
+        treeOfCharacters.add('a');
+        treeOfCharacters.add('A');
+        assertEquals('A', treeOfCharacters.min());
+    }
+
+    @Test
+    void givenEmptyTree_whenCallingMax_thenThrowException(){
+        BST<Integer> emptyTree = new BST<>();
+        assertThrows(EmptyTreeException.class, emptyTree::max);
+    }
+
+    @Test
+    void givenValidTree_whenCallingMax_thenReturnAsExpected(){
+        BST<Character> treeOfCharacters = new BST<>();
+        treeOfCharacters.add('b');
+        treeOfCharacters.add('C');
+        treeOfCharacters.add('g');
+        treeOfCharacters.add('b');
+        treeOfCharacters.add('a');
+        treeOfCharacters.add('A');
+        assertEquals('g', treeOfCharacters.max());
     }
 }

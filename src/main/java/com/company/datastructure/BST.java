@@ -1,5 +1,7 @@
 package com.company.datastructure;
 
+import com.company.datastructure.exceptions.EmptyTreeException;
+
 import java.util.ArrayList;
 
 
@@ -38,18 +40,18 @@ public class BST<T extends Comparable> {
     }
 
     // search for an element k in the tree
-    public boolean search(T element) {
-        return search(root, element);
+    public boolean contains(T element) {
+        return contains(root, element);
     }
 
-    private boolean search(BTNode root, T element) {
+    private boolean contains(BTNode root, T element) {
         if (root == null)
             return false;
         if (element.compareTo(root.data) == 0)
             return true;
         if (element.compareTo(root.data) < 0)
-            return search(root.left, element);
-        return search(root.right, element);
+            return contains(root.left, element);
+        return contains(root.right, element);
     }
 
     // we need this function in successor function
@@ -90,30 +92,24 @@ public class BST<T extends Comparable> {
 
     // find the minimum element in the tree
     public T min() {
-        if (root == null) {
-            System.out.println("The tree is empty");
-            return (T) "";
-        } else {
-            BTNode ptr = root;
-            while (ptr.left != null) {
-                ptr = ptr.left;
-            }
-            return (T) ptr.data;
+        if (root == null)
+            throw new EmptyTreeException();
+        BTNode pointer = root;
+        while (pointer.left != null) {
+            pointer = pointer.left;
         }
+        return pointer.data;
     }
 
     // find the maximum element in the tree
     public T max() {
-        if (root == null) {
-            System.out.println("The tree is empty");
-            return (T) "";
-        } else {
-            BTNode ptr = root;
-            while (ptr.right != null) {
-                ptr = ptr.right;
-            }
-            return (T) ptr.data;
+        if (root == null)
+            throw new EmptyTreeException();
+        BTNode pointer = root;
+        while (pointer.right != null) {
+            pointer = pointer.right;
         }
+        return pointer.data;
     }
 
     // find the successor element of x in the tree
