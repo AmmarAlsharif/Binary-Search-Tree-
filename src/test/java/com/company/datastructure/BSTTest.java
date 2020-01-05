@@ -1,6 +1,8 @@
 package com.company.datastructure;
 
+import com.company.datastructure.exceptions.ValueNotFoundException;
 import com.company.datastructure.exceptions.EmptyTreeException;
+import com.company.datastructure.exceptions.NoSuccessorException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -149,13 +151,13 @@ class BSTTest {
     }
 
     @Test
-    void givenEmptyTree_whenCallingMin_thenThrowException(){
+    void givenEmptyTree_whenCallingMin_thenThrowException() {
         BST<Integer> emptyTree = new BST<>();
         assertThrows(EmptyTreeException.class, emptyTree::min);
     }
 
     @Test
-    void givenValidTree_whenCallingMin_thenReturnAsExpected(){
+    void givenValidTree_whenCallingMin_thenReturnAsExpected() {
         BST<Character> treeOfCharacters = new BST<>();
         treeOfCharacters.add('b');
         treeOfCharacters.add('C');
@@ -167,13 +169,13 @@ class BSTTest {
     }
 
     @Test
-    void givenEmptyTree_whenCallingMax_thenThrowException(){
+    void givenEmptyTree_whenCallingMax_thenThrowException() {
         BST<Integer> emptyTree = new BST<>();
         assertThrows(EmptyTreeException.class, emptyTree::max);
     }
 
     @Test
-    void givenValidTree_whenCallingMax_thenReturnAsExpected(){
+    void givenValidTree_whenCallingMax_thenReturnAsExpected() {
         BST<Character> treeOfCharacters = new BST<>();
         treeOfCharacters.add('b');
         treeOfCharacters.add('C');
@@ -182,5 +184,33 @@ class BSTTest {
         treeOfCharacters.add('a');
         treeOfCharacters.add('A');
         assertEquals('g', treeOfCharacters.max());
+    }
+
+    @Test
+    void givenNull_whenCallSuccessor_thenThrowException() {
+        BST<Integer> tree = new BST<>();
+        assertThrows(EmptyTreeException.class, () -> tree.successorValueOf(null));
+    }
+
+    @Test
+    void givenElementWithNoSuccessor_whenCallSuccessor_thenThrowException() {
+        BST<Integer> tree = new BST<>();
+        tree.add(1);
+        tree.add(5);
+        tree.add(4);
+        tree.add(2);
+        tree.add(3);
+        NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
+                () -> tree.successorValueOf(5));
+        assertEquals("Element \"5\" has no successor", thrown.getMessage());
+    }
+
+    @Test
+    void givenNoneIncludedValue_whenCallSuccessor_thenThrowException() {
+        BST<Integer> tree = new BST<>();
+        tree.add(3);
+        tree.add(-6);
+        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successorValueOf(5));
+        assertEquals("Value \"5\" not found", thrown.getMessage());
     }
 }

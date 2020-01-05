@@ -1,6 +1,8 @@
 package com.company.datastructure;
 
+import com.company.datastructure.exceptions.ValueNotFoundException;
 import com.company.datastructure.exceptions.EmptyTreeException;
+import com.company.datastructure.exceptions.NoSuccessorException;
 
 import java.util.ArrayList;
 
@@ -13,7 +15,7 @@ public class BST<T extends Comparable> {
     // add node to the tree
     public void add(T element) {
         BTNode newNode = new BTNode(element);
-        if (root == null) {
+        if (isEmpty()) {
             root = newNode;
             return;
         }
@@ -22,11 +24,11 @@ public class BST<T extends Comparable> {
             if (newNode.data.compareTo(pointer.data) > 0) {
                 if (pointer.right == null)
                     break;
-                pointer = pointer.right;
+                pointer = goRight(pointer);
             } else {
                 if (pointer.left == null)
                     break;
-                pointer = pointer.left;
+                pointer = goLeft(pointer);
             }
         }
         if (newNode.data.compareTo(pointer.data) > 0) {
@@ -55,107 +57,124 @@ public class BST<T extends Comparable> {
     }
 
     // we need this function in successor function
-    private BTNode searchN(BTNode ptr, T k) {
+    private BTNode getNodeWithValue(BTNode ptr, T k) {
         if (k instanceof Integer) {
             if (ptr == null || (Integer) k - (Integer) ptr.data == 0) return ptr;
             if ((Integer) k < (Integer) ptr.data)
-                return searchN(ptr.left, k);
+                return getNodeWithValue(ptr.left, k);
             else
-                return searchN(ptr.right, k);
+                return getNodeWithValue(ptr.right, k);
         } else if (k instanceof Long) {
             if (ptr == null || (Long) k - (Long) ptr.data == 0) return ptr;
             if ((Long) k < (Long) ptr.data)
-                return searchN(ptr.left, k);
+                return getNodeWithValue(ptr.left, k);
             else
-                return searchN(ptr.right, k);
+                return getNodeWithValue(ptr.right, k);
         } else if (k instanceof Double) {
             if (ptr == null || (Double) k - (Double) ptr.data == 0) return ptr;
             if ((Double) k < (Double) ptr.data)
-                return searchN(ptr.left, k);
+                return getNodeWithValue(ptr.left, k);
             else
-                return searchN(ptr.right, k);
+                return getNodeWithValue(ptr.right, k);
         } else if (k instanceof Character) {
             if (ptr == null || (Character) k - (Character) ptr.data == 0) return ptr;
             if ((Character) k < (Character) ptr.data)
-                return searchN(ptr.left, k);
+                return getNodeWithValue(ptr.left, k);
             else
-                return searchN(ptr.right, k);
+                return getNodeWithValue(ptr.right, k);
         } else if (k instanceof String) {
             if (ptr == null || ((String) k).equals((String) ptr.data)) return ptr;
             if (((String) k).compareTo((String) ptr.data) < 0)
-                return searchN(ptr.left, k);
+                return getNodeWithValue(ptr.left, k);
             else
-                return searchN(ptr.right, k);
+                return getNodeWithValue(ptr.right, k);
         }
         return null;
     }
 
     // find the minimum element in the tree
     public T min() {
-        if (root == null)
+        if (isEmpty())
             throw new EmptyTreeException();
         BTNode pointer = root;
-        while (pointer.left != null) {
-            pointer = pointer.left;
+        while (isHasLeftChild(pointer)) {
+            pointer = goLeft(pointer);
         }
         return pointer.data;
     }
 
     // find the maximum element in the tree
     public T max() {
-        if (root == null)
+        if (isEmpty())
             throw new EmptyTreeException();
         BTNode pointer = root;
-        while (pointer.right != null) {
-            pointer = pointer.right;
+        while (isHasRightChild(pointer)) {
+            pointer = goRight(pointer);
         }
         return pointer.data;
     }
 
-    // find the successor element of x in the tree
-    public T successor(T x) {
-        T e = (T) "";
-        if (root == null)
-            System.out.println("The tree is empty");
-        else {
-            BTNode ptr = searchN(root, x);
-            if (ptr == null) System.out.println(x + " is not found");
-            else if (ptr.right != null) {
-                ptr = ptr.right;
-                while (ptr.left != null) {
-                    ptr = ptr.left;
-                }
-                e = (T) ptr.data;
-            } else {
-                BTNode ptr2 = ptr.parent;
-                while (ptr2 != null) {
-                    if (ptr2.left == ptr) break;
-                    else {
-                        ptr = ptr2;
-                        ptr2 = ptr2.parent;
-                    }
-                }
-
-                if (ptr2 == null)
-                    System.out.println(x + " is the largest element"
-                            + " ,so it has no successor");
-                else
-                    e = (T) ptr2.data;
+    // find the successor element of value in the tree
+    public T successorValueOf(T value) {
+        if (isEmpty())
+            throw new EmptyTreeException();
+        BTNode node1 = getNodeWithValue(root, value);
+        if (node1 == null)
+            throw new ValueNotFoundException("Value \"" + value + "\" not found");
+        if (isHasRightChild(node1)) {
+            node1 = goRight(node1);
+            while (isHasLeftChild(node1)) {
+                node1 = goLeft(node1);
             }
+            return node1.data;
         }
-        return e;
+        BTNode pointer2 = node1.parent;
+        while (pointer2 != null) {
+            if (pointer2.left == node1)
+                return pointer2.left.data;
+            node1 = pointer2;
+            pointer2 = goUp(pointer2);
+        }
+        throw new NoSuccessorException("Element \"" + value + "\" has no successor");
+    }
+
+    private BTNode goLeft(BTNode node1) {
+        node1 = node1.left;
+        return node1;
+    }
+
+    private BTNode goRight(BTNode node1) {
+        node1 = node1.right;
+        return node1;
+    }
+
+    private BTNode goUp(BTNode pointer2) {
+        pointer2 = pointer2.parent;
+        return pointer2;
+    }
+
+    private boolean isEmpty() {
+        return root == null;
+    }
+
+    private boolean isHasLeftChild(BTNode node1) {
+        return node1.left != null;
+    }
+
+    private boolean isHasRightChild(BTNode pointer1) {
+        return pointer1.right != null;
     }
 
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
     private BTNode successorN(T x) {
-        if (root == null) return null;
+        if (isEmpty()) return null;
         else {
-            BTNode ptr = searchN(root, x);
-            if (ptr.right != null) {
-                ptr = ptr.right;
-                while (ptr.left != null) {
-                    ptr = ptr.left;
+            BTNode ptr = getNodeWithValue(root, x);
+            if (isHasRightChild(ptr)) {
+                ptr = goRight(ptr);
+                while (isHasLeftChild(ptr)) {
+                    ptr = goLeft(ptr);
                 }
                 return ptr;
             } else {
@@ -164,7 +183,7 @@ public class BST<T extends Comparable> {
                     if (ptr2.left == ptr) break;
                     else {
                         ptr = ptr2;
-                        ptr2 = ptr2.parent;
+                        ptr2 = goUp(ptr2);
                     }
                 }
 
@@ -178,9 +197,9 @@ public class BST<T extends Comparable> {
 
     // delete an element x from the tree
     public void delete(T x) {
-        if (root == null) System.out.println("No elements to delete");
+        if (isEmpty()) System.out.println("No elements to delete");
         else {
-            BTNode ptr = searchN(root, x);
+            BTNode ptr = getNodeWithValue(root, x);
             if (ptr == null) {
                 System.out.println(x + " is not found");
                 return;
@@ -196,20 +215,20 @@ public class BST<T extends Comparable> {
                 }
                 size--;
             } else if (ptr.left == null || ptr.right == null) {
-                if (ptr == root && ptr.left != null) {
-                    root = root.left;
+                if (ptr == root && isHasLeftChild(ptr)) {
+                    root = goLeft(root);
                     root.parent = null;
-                } else if (ptr == root && ptr.right != null) {
-                    root = root.right;
+                } else if (ptr == root && isHasRightChild(ptr)) {
+                    root = goRight(root);
                     root.parent = null;
                 } else {
                     BTNode ptr2 = ptr.parent;
                     if (ptr == ptr2.left) {
-                        if (ptr.left != null) ptr2.left = ptr.left;
+                        if (isHasLeftChild(ptr)) ptr2.left = ptr.left;
                         else ptr2.left = ptr.right;
                         ptr2.left.parent = ptr2;
                     } else {
-                        if (ptr.left != null) ptr2.right = ptr.left;
+                        if (isHasLeftChild(ptr)) ptr2.right = ptr.left;
                         else ptr2.right = ptr.right;
                         ptr2.right.parent = ptr2;
                     }
@@ -228,7 +247,7 @@ public class BST<T extends Comparable> {
     // of the node that has 2 children
     private void deleteN(BTNode ptr) {
         if (ptr.right == null) {
-            ptr = ptr.parent;
+            ptr = goUp(ptr);
             ptr.right = null;
         } else {
             BTNode ptr2 = ptr.parent;
