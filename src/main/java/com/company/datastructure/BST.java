@@ -22,11 +22,11 @@ public class BST<T extends Comparable> {
         BTNode pointer = root;
         while (pointer != null) {
             if (newNode.data.compareTo(pointer.data) > 0) {
-                if (pointer.right == null)
+                if (!pointer.isHasRight())
                     break;
                 pointer = goRight(pointer);
             } else {
-                if (pointer.left == null)
+                if (!pointer.isHasLeft())
                     break;
                 pointer = goLeft(pointer);
             }
@@ -57,39 +57,12 @@ public class BST<T extends Comparable> {
     }
 
     // we need this function in successor function
-    private BTNode getNodeWithValue(BTNode ptr, T k) {
-        if (k instanceof Integer) {
-            if (ptr == null || (Integer) k - (Integer) ptr.data == 0) return ptr;
-            if ((Integer) k < (Integer) ptr.data)
-                return getNodeWithValue(ptr.left, k);
-            else
-                return getNodeWithValue(ptr.right, k);
-        } else if (k instanceof Long) {
-            if (ptr == null || (Long) k - (Long) ptr.data == 0) return ptr;
-            if ((Long) k < (Long) ptr.data)
-                return getNodeWithValue(ptr.left, k);
-            else
-                return getNodeWithValue(ptr.right, k);
-        } else if (k instanceof Double) {
-            if (ptr == null || (Double) k - (Double) ptr.data == 0) return ptr;
-            if ((Double) k < (Double) ptr.data)
-                return getNodeWithValue(ptr.left, k);
-            else
-                return getNodeWithValue(ptr.right, k);
-        } else if (k instanceof Character) {
-            if (ptr == null || (Character) k - (Character) ptr.data == 0) return ptr;
-            if ((Character) k < (Character) ptr.data)
-                return getNodeWithValue(ptr.left, k);
-            else
-                return getNodeWithValue(ptr.right, k);
-        } else if (k instanceof String) {
-            if (ptr == null || ((String) k).equals((String) ptr.data)) return ptr;
-            if (((String) k).compareTo((String) ptr.data) < 0)
-                return getNodeWithValue(ptr.left, k);
-            else
-                return getNodeWithValue(ptr.right, k);
-        }
-        return null;
+    private BTNode getNodeWithValue(BTNode startingNode, T value) {
+        if (startingNode == null || value.compareTo(startingNode.data) == 0)
+            return startingNode;
+        if (value.compareTo(startingNode.data) < 0)
+            return getNodeWithValue(startingNode.left, value);
+        return getNodeWithValue(startingNode.right, value);
     }
 
     // find the minimum element in the tree
@@ -97,7 +70,7 @@ public class BST<T extends Comparable> {
         if (isEmpty())
             throw new EmptyTreeException();
         BTNode pointer = root;
-        while (isHasLeftChild(pointer)) {
+        while (pointer.isHasLeft()) {
             pointer = goLeft(pointer);
         }
         return pointer.data;
@@ -108,7 +81,7 @@ public class BST<T extends Comparable> {
         if (isEmpty())
             throw new EmptyTreeException();
         BTNode pointer = root;
-        while (isHasRightChild(pointer)) {
+        while (pointer.isHasRight()) {
             pointer = goRight(pointer);
         }
         return pointer.data;
@@ -121,9 +94,9 @@ public class BST<T extends Comparable> {
         BTNode node1 = getNodeWithValue(root, value);
         if (node1 == null)
             throw new ValueNotFoundException("Value \"" + value + "\" not found");
-        if (isHasRightChild(node1)) {
+        if (node1.isHasRight()) {
             node1 = goRight(node1);
-            while (isHasLeftChild(node1)) {
+            while (node1.isHasLeft()) {
                 node1 = goLeft(node1);
             }
             return node1.data;
@@ -135,7 +108,7 @@ public class BST<T extends Comparable> {
             node1 = pointer2;
             pointer2 = goUp(pointer2);
         }
-        throw new NoSuccessorException("Element \"" + value + "\" has no successor");
+        throw new NoSuccessorException("Value \"" + value + "\" has no successor");
     }
 
     private BTNode goLeft(BTNode node1) {
@@ -157,23 +130,15 @@ public class BST<T extends Comparable> {
         return root == null;
     }
 
-    private boolean isHasLeftChild(BTNode node1) {
-        return node1.left != null;
-    }
-
-    private boolean isHasRightChild(BTNode pointer1) {
-        return pointer1.right != null;
-    }
-
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
     private BTNode successorN(T x) {
         if (isEmpty()) return null;
         else {
             BTNode ptr = getNodeWithValue(root, x);
-            if (isHasRightChild(ptr)) {
+            if (ptr.isHasRight()) {
                 ptr = goRight(ptr);
-                while (isHasLeftChild(ptr)) {
+                while (ptr.isHasLeft()) {
                     ptr = goLeft(ptr);
                 }
                 return ptr;
@@ -215,20 +180,20 @@ public class BST<T extends Comparable> {
                 }
                 size--;
             } else if (ptr.left == null || ptr.right == null) {
-                if (ptr == root && isHasLeftChild(ptr)) {
+                if (ptr == root && ptr.isHasLeft()) {
                     root = goLeft(root);
                     root.parent = null;
-                } else if (ptr == root && isHasRightChild(ptr)) {
+                } else if (ptr == root && ptr.isHasRight()) {
                     root = goRight(root);
                     root.parent = null;
                 } else {
                     BTNode ptr2 = ptr.parent;
                     if (ptr == ptr2.left) {
-                        if (isHasLeftChild(ptr)) ptr2.left = ptr.left;
+                        if (ptr.isHasLeft()) ptr2.left = ptr.left;
                         else ptr2.left = ptr.right;
                         ptr2.left.parent = ptr2;
                     } else {
-                        if (isHasLeftChild(ptr)) ptr2.right = ptr.left;
+                        if (ptr.isHasLeft()) ptr2.right = ptr.left;
                         else ptr2.right = ptr.right;
                         ptr2.right.parent = ptr2;
                     }
@@ -322,6 +287,18 @@ public class BST<T extends Comparable> {
 
         private BTNode(T data) {
             this.data = data;
+        }
+
+        private boolean isHasRight() {
+            return this.right != null;
+        }
+
+        private boolean isHasLeft() {
+            return this.left != null;
+        }
+
+        private boolean isHasParent() {
+            return this.parent != null;
         }
     }
 }

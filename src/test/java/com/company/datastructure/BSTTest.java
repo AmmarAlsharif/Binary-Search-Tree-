@@ -202,7 +202,7 @@ class BSTTest {
         tree.add(3);
         NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
                 () -> tree.successorValueOf(5));
-        assertEquals("Element \"5\" has no successor", thrown.getMessage());
+        assertEquals("Value \"5\" has no successor", thrown.getMessage());
     }
 
     @Test
