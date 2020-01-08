@@ -57,8 +57,10 @@ public class BST<T extends Comparable> {
     }
 
     // we need this function in successor function
-    private BTNode getNodeWithValue(BTNode startingNode, T value) {
-        if (startingNode == null || value.compareTo(startingNode.data) == 0)
+    private BTNode getNodeWithValue(BTNode startingNode, T value) throws ValueNotFoundException {
+        if (startingNode == null)
+            throw new ValueNotFoundException("Value \"" + value + "\" not found");
+        if (value.compareTo(startingNode.data) == 0)
             return startingNode;
         if (value.compareTo(startingNode.data) < 0)
             return getNodeWithValue(startingNode.left, value);
@@ -88,12 +90,10 @@ public class BST<T extends Comparable> {
     }
 
     // find the successor element of value in the tree
-    public T successorValueOf(T value) {
+    public T successorValueOf(T value) throws EmptyTreeException, ValueNotFoundException {
         if (isEmpty())
             throw new EmptyTreeException();
         BTNode node1 = getNodeWithValue(root, value);
-        if (node1 == null)
-            throw new ValueNotFoundException("Value \"" + value + "\" not found");
         if (node1.isHasRight()) {
             node1 = goRight(node1);
             while (node1.isHasLeft()) {
@@ -132,80 +132,80 @@ public class BST<T extends Comparable> {
 
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
-    private BTNode successorN(T x) {
-        if (isEmpty()) return null;
-        else {
-            BTNode ptr = getNodeWithValue(root, x);
-            if (ptr.isHasRight()) {
-                ptr = goRight(ptr);
-                while (ptr.isHasLeft()) {
-                    ptr = goLeft(ptr);
-                }
-                return ptr;
-            } else {
-                BTNode ptr2 = ptr.parent;
-                while (ptr2 != null) {
-                    if (ptr2.left == ptr) break;
-                    else {
-                        ptr = ptr2;
-                        ptr2 = goUp(ptr2);
-                    }
-                }
-
-                if (ptr2 == null)
-                    return null;
-                else
-                    return ptr2;
+    private BTNode getNodeWithValue(T x) {
+        BTNode ptr = getNodeWithValue(root, x);
+        if (ptr.isHasRight()) {
+            ptr = goRight(ptr);
+            while (ptr.isHasLeft()) {
+                ptr = goLeft(ptr);
             }
+            return ptr;
+        } else {
+            BTNode ptr2 = ptr.parent;
+            while (ptr2 != null) {
+                if (ptr2.left == ptr) break;
+                else {
+                    ptr = ptr2;
+                    ptr2 = goUp(ptr2);
+                }
+            }
+
+            if (ptr2 == null)
+                return null;
+            else
+                return ptr2;
         }
     }
 
-    // delete an element x from the tree
-    public void delete(T x) {
-        if (isEmpty()) System.out.println("No elements to delete");
-        else {
-            BTNode ptr = getNodeWithValue(root, x);
-            if (ptr == null) {
-                System.out.println(x + " is not found");
+    // delete an value from the tree
+    public void delete(T value) {
+        if (isEmpty())
+            throw new EmptyTreeException();
+        BTNode ptr = getNodeWithValue(root, value);
+        if (!ptr.isHasLeft() && !ptr.isHasRight()) {
+            if (ptr == root) root = null;
+            else {
+                BTNode ptr2 = ptr.parent;
+                if (ptr2.left == ptr)
+                    ptr2.left = null;
+                else
+                    ptr2.right = null;
+            }
+            size--;
+            return;
+        }
+        if (!ptr.isHasLeft() || !ptr.isHasRight()) {
+            if (ptr == root && ptr.isHasLeft()) {
+                root = goLeft(root);
+                root.parent = null;
                 return;
             }
-            if (ptr.left == null && ptr.right == null) {
-                if (ptr == root) root = null;
-                else {
-                    BTNode ptr2 = ptr.parent;
-                    if (ptr2.left == ptr)
-                        ptr2.left = null;
-                    else
-                        ptr2.right = null;
-                }
-                size--;
-            } else if (ptr.left == null || ptr.right == null) {
-                if (ptr == root && ptr.isHasLeft()) {
-                    root = goLeft(root);
-                    root.parent = null;
-                } else if (ptr == root && ptr.isHasRight()) {
-                    root = goRight(root);
-                    root.parent = null;
-                } else {
-                    BTNode ptr2 = ptr.parent;
-                    if (ptr == ptr2.left) {
-                        if (ptr.isHasLeft()) ptr2.left = ptr.left;
-                        else ptr2.left = ptr.right;
-                        ptr2.left.parent = ptr2;
-                    } else {
-                        if (ptr.isHasLeft()) ptr2.right = ptr.left;
-                        else ptr2.right = ptr.right;
-                        ptr2.right.parent = ptr2;
-                    }
-                }
-                size--;
-            } else {
-                BTNode succ = successorN(x);
-                ptr.data = succ.data;
-                deleteN(succ);
-                size--;
+            if (ptr == root) {
+                root = goRight(root);
+                root.parent = null;
+                return;
             }
+            BTNode ptr2 = ptr.parent;
+            if (ptr == ptr2.left) {
+                if (ptr.isHasLeft())
+                    ptr2.left = ptr.left;
+                else
+                    ptr2.left = ptr.right;
+                ptr2.left.parent = ptr2;
+                return;
+            }
+            if (ptr.isHasLeft())
+                ptr2.right = ptr.left;
+            else
+                ptr2.right = ptr.right;
+            ptr2.right.parent = ptr2;
+            size--;
+            return;
         }
+        BTNode succ = getNodeWithValue(value);
+        ptr.data = succ.data;
+        deleteN(succ);
+        size--;
     }
 
     // we need this method to delete the successor Node

@@ -3,6 +3,7 @@ package com.company.datastructure;
 import com.company.datastructure.exceptions.ValueNotFoundException;
 import com.company.datastructure.exceptions.EmptyTreeException;
 import com.company.datastructure.exceptions.NoSuccessorException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ class BSTTest {
 
 
     @Test
-    void givenIntegers_whenAdding_thenSuccess() {
+    void givenIntegers_whenCallingAdd_thenSuccess() {
         BST<Integer> tree = new BST<>();
         tree.add(5);
         tree.add(4);
@@ -29,12 +30,11 @@ class BSTTest {
         expectedOrderedIntegers.add(5);
         expectedOrderedIntegers.add(6);
         ArrayList<Integer> actualOrderedIntegers = tree.inorder();
-        assertNotNull(actualOrderedIntegers);
         assertEquals(expectedOrderedIntegers, actualOrderedIntegers);
     }
 
     @Test
-    void givenStrings_whenAdding_thenSuccess() {
+    void givenStrings_whenCallingAdd_thenSuccess() {
         BST<String> treeOfStrings = new BST<>();
         treeOfStrings.add("Ab");
         treeOfStrings.add("aA");
@@ -50,13 +50,12 @@ class BSTTest {
         expectedOrderedStrings.add("aa");
 
         ArrayList<String> actualOrderedStrings = treeOfStrings.inorder();
-        assertNotNull(actualOrderedStrings);
         assertEquals(expectedOrderedStrings, actualOrderedStrings);
 
     }
 
     @Test
-    void givenCharacters_whenAdding_thenSuccess() {
+    void givenCharacters_whenCallingAdd_thenSuccess() {
         BST<Character> treeOfStrings = new BST<>();
         treeOfStrings.add('A');
         treeOfStrings.add('a');
@@ -72,13 +71,12 @@ class BSTTest {
         expectedOrderedStrings.add('c');
 
         ArrayList<Character> actualOrderedStrings = treeOfStrings.inorder();
-        assertNotNull(actualOrderedStrings);
         assertEquals(expectedOrderedStrings, actualOrderedStrings);
 
     }
 
     @Test
-    void givenIncludedDoubles_whenSearching_thenReturnAsExpected() {
+    void givenIncludedDoubles_whenCallingContains_thenReturnAsExpected() {
         BST<Double> treeOfDoubles = new BST<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
@@ -93,7 +91,7 @@ class BSTTest {
     }
 
     @Test
-    void givenIncludedStrings_whenSearching_thenReturnAsExpected() {
+    void givenIncludedStrings_whenCallingContains_thenReturnAsExpected() {
         BST<String> treeOfStrings = new BST<>();
         treeOfStrings.add("AB");
         treeOfStrings.add("BA");
@@ -106,7 +104,7 @@ class BSTTest {
     }
 
     @Test
-    void givenIncludedCharacters_whenSearching_thenReturnAsExpected() {
+    void givenIncludedCharacters_whenCallingContains_thenReturnAsExpected() {
         BST<Character> treeOfStrings = new BST<>();
         treeOfStrings.add('A');
         treeOfStrings.add('B');
@@ -120,7 +118,7 @@ class BSTTest {
 
 
     @Test
-    void givenExcludedDoubles_whenSearching_thenReturnAsExpected() {
+    void givenExcludedDoubles_whenCallingContains_thenReturnAsExpected() {
         BST<Double> treeOfDoubles = new BST<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
@@ -131,7 +129,7 @@ class BSTTest {
     }
 
     @Test
-    void givenExcludedStrings_whenSearching_thenReturnAsExpected() {
+    void givenExcludedStrings_whenCallingContains_thenReturnAsExpected() {
         BST<String> treeOfStrings = new BST<>();
         treeOfStrings.add("AB");
         treeOfStrings.add("BA");
@@ -141,7 +139,7 @@ class BSTTest {
     }
 
     @Test
-    void givenExcludedCharacters_whenSearching_thenReturnAsExpected() {
+    void givenExcludedCharacters_whenCallingContains_thenReturnAsExpected() {
         BST<Character> treeOfStrings = new BST<>();
         treeOfStrings.add('A');
         treeOfStrings.add('B');
@@ -187,13 +185,13 @@ class BSTTest {
     }
 
     @Test
-    void givenNull_whenCallSuccessor_thenThrowException() {
+    void givenNull_whenCallingSuccessor_thenThrowException() {
         BST<Integer> tree = new BST<>();
         assertThrows(EmptyTreeException.class, () -> tree.successorValueOf(null));
     }
 
     @Test
-    void givenElementWithNoSuccessor_whenCallSuccessor_thenThrowException() {
+    void givenElementWithNoSuccessor_whenCallingSuccessor_thenThrowException() {
         BST<Integer> tree = new BST<>();
         tree.add(1);
         tree.add(5);
@@ -206,11 +204,45 @@ class BSTTest {
     }
 
     @Test
-    void givenNoneIncludedValue_whenCallSuccessor_thenThrowException() {
+    void givenNoneIncludedValue_whenCallingSuccessor_thenThrowException() {
         BST<Integer> tree = new BST<>();
         tree.add(3);
         tree.add(-6);
         ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successorValueOf(5));
         assertEquals("Value \"5\" not found", thrown.getMessage());
+    }
+
+    @Test
+    void givenEmptyTree_whenCallingDelete_thenThrowException() {
+        BST<String> tree = new BST<>();
+        assertThrows(EmptyTreeException.class, () -> tree.delete("myString"));
+    }
+
+    @Test
+    void givenNonIncludedValue_whenDelete_thenThrowException() {
+        BST<String> tree = new BST<>();
+        tree.add("string1");
+        tree.add("string2");
+        tree.add("string3");
+        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.delete("string"));
+        assertEquals("Value \"string\" not found", thrown.getMessage());
+    }
+
+    @Test
+    void givenIncludedValue_whenCallingDelete_thenSuccess() {
+        BST<String> tree = new BST<>();
+        tree.add("word4");
+        tree.add("word1");
+        tree.add("word3");
+        tree.add("word2");
+
+        ArrayList<String> expectedValues = new ArrayList<>();
+        expectedValues.add("word1");
+        expectedValues.add("word3");
+        expectedValues.add("word4");
+
+        tree.delete("word2");
+        ArrayList<String> actualValues = tree.inorder();
+        assertEquals(expectedValues, actualValues);
     }
 }
