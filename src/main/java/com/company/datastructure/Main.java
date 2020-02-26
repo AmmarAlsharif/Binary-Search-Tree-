@@ -1,11 +1,8 @@
 package com.company.datastructure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class Main {
     public static void main(String[] args) {
-        BST<Integer> A = new BST<>();
+        BinarySearchTree<Integer> A = new BinarySearchTree<>();
         A.add(15);
         A.add(18);
         A.add(17);
@@ -26,7 +23,7 @@ public class Main {
         A.preorder();  System.out.println();
 
 
-        BST<Character> A2 = new BST<>();
+        BinarySearchTree<Character> A2 = new BinarySearchTree<>();
         A2.add('B');
         A2.add('A');
         A2.add('E');

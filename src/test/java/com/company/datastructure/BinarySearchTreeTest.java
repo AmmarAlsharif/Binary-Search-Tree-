@@ -3,19 +3,18 @@ package com.company.datastructure;
 import com.company.datastructure.exceptions.ValueNotFoundException;
 import com.company.datastructure.exceptions.EmptyTreeException;
 import com.company.datastructure.exceptions.NoSuccessorException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BSTTest {
+class BinarySearchTreeTest {
 
 
     @Test
     void givenIntegers_whenCallingAdd_thenSuccess() {
-        BST<Integer> tree = new BST<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         tree.add(5);
         tree.add(4);
         tree.add(4);
@@ -35,7 +34,7 @@ class BSTTest {
 
     @Test
     void givenStrings_whenCallingAdd_thenSuccess() {
-        BST<String> treeOfStrings = new BST<>();
+        BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add("Ab");
         treeOfStrings.add("aA");
         treeOfStrings.add("AA");
@@ -56,7 +55,7 @@ class BSTTest {
 
     @Test
     void givenCharacters_whenCallingAdd_thenSuccess() {
-        BST<Character> treeOfStrings = new BST<>();
+        BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add('A');
         treeOfStrings.add('a');
         treeOfStrings.add('b');
@@ -77,7 +76,7 @@ class BSTTest {
 
     @Test
     void givenIncludedDoubles_whenCallingContains_thenReturnAsExpected() {
-        BST<Double> treeOfDoubles = new BST<>();
+        BinarySearchTree<Double> treeOfDoubles = new BinarySearchTree<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
         treeOfDoubles.add(-5.0);
@@ -92,7 +91,7 @@ class BSTTest {
 
     @Test
     void givenIncludedStrings_whenCallingContains_thenReturnAsExpected() {
-        BST<String> treeOfStrings = new BST<>();
+        BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add("AB");
         treeOfStrings.add("BA");
         treeOfStrings.add("CD");
@@ -105,7 +104,7 @@ class BSTTest {
 
     @Test
     void givenIncludedCharacters_whenCallingContains_thenReturnAsExpected() {
-        BST<Character> treeOfStrings = new BST<>();
+        BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add('A');
         treeOfStrings.add('B');
         treeOfStrings.add('a');
@@ -119,7 +118,7 @@ class BSTTest {
 
     @Test
     void givenExcludedDoubles_whenCallingContains_thenReturnAsExpected() {
-        BST<Double> treeOfDoubles = new BST<>();
+        BinarySearchTree<Double> treeOfDoubles = new BinarySearchTree<>();
         treeOfDoubles.add(5.2);
         treeOfDoubles.add(2.3);
         treeOfDoubles.add(-5.0);
@@ -130,7 +129,7 @@ class BSTTest {
 
     @Test
     void givenExcludedStrings_whenCallingContains_thenReturnAsExpected() {
-        BST<String> treeOfStrings = new BST<>();
+        BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add("AB");
         treeOfStrings.add("BA");
         treeOfStrings.add("CD");
@@ -140,7 +139,7 @@ class BSTTest {
 
     @Test
     void givenExcludedCharacters_whenCallingContains_thenReturnAsExpected() {
-        BST<Character> treeOfStrings = new BST<>();
+        BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
         treeOfStrings.add('A');
         treeOfStrings.add('B');
         treeOfStrings.add('a');
@@ -150,13 +149,13 @@ class BSTTest {
 
     @Test
     void givenEmptyTree_whenCallingMin_thenThrowException() {
-        BST<Integer> emptyTree = new BST<>();
+        BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
         assertThrows(EmptyTreeException.class, emptyTree::min);
     }
 
     @Test
     void givenValidTree_whenCallingMin_thenReturnAsExpected() {
-        BST<Character> treeOfCharacters = new BST<>();
+        BinarySearchTree<Character> treeOfCharacters = new BinarySearchTree<>();
         treeOfCharacters.add('b');
         treeOfCharacters.add('C');
         treeOfCharacters.add('g');
@@ -168,13 +167,13 @@ class BSTTest {
 
     @Test
     void givenEmptyTree_whenCallingMax_thenThrowException() {
-        BST<Integer> emptyTree = new BST<>();
+        BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
         assertThrows(EmptyTreeException.class, emptyTree::max);
     }
 
     @Test
     void givenValidTree_whenCallingMax_thenReturnAsExpected() {
-        BST<Character> treeOfCharacters = new BST<>();
+        BinarySearchTree<Character> treeOfCharacters = new BinarySearchTree<>();
         treeOfCharacters.add('b');
         treeOfCharacters.add('C');
         treeOfCharacters.add('g');
@@ -186,13 +185,13 @@ class BSTTest {
 
     @Test
     void givenNull_whenCallingSuccessor_thenThrowException() {
-        BST<Integer> tree = new BST<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         assertThrows(EmptyTreeException.class, () -> tree.successorValueOf(null));
     }
 
     @Test
     void givenElementWithNoSuccessor_whenCallingSuccessor_thenThrowException() {
-        BST<Integer> tree = new BST<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         tree.add(1);
         tree.add(5);
         tree.add(4);
@@ -205,7 +204,7 @@ class BSTTest {
 
     @Test
     void givenNoneIncludedValue_whenCallingSuccessor_thenThrowException() {
-        BST<Integer> tree = new BST<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         tree.add(3);
         tree.add(-6);
         ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successorValueOf(5));
@@ -214,13 +213,13 @@ class BSTTest {
 
     @Test
     void givenEmptyTree_whenCallingDelete_thenThrowException() {
-        BST<String> tree = new BST<>();
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
         assertThrows(EmptyTreeException.class, () -> tree.delete("myString"));
     }
 
     @Test
     void givenNonIncludedValue_whenDelete_thenThrowException() {
-        BST<String> tree = new BST<>();
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
         tree.add("string1");
         tree.add("string2");
         tree.add("string3");
@@ -230,7 +229,7 @@ class BSTTest {
 
     @Test
     void givenIncludedValue_whenCallingDelete_thenSuccess() {
-        BST<String> tree = new BST<>();
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
         tree.add("word4");
         tree.add("word1");
         tree.add("word3");

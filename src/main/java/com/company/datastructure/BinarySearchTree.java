@@ -7,7 +7,7 @@ import com.company.datastructure.exceptions.NoSuccessorException;
 import java.util.ArrayList;
 
 
-public class BST<T extends Comparable> {
+public class BinarySearchTree<T extends Comparable<T>> {
     private BTNode root;
 
     private int size;
