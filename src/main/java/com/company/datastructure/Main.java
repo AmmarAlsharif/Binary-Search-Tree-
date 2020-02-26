@@ -18,7 +18,7 @@ public class Main {
         A.delete(6);
         System.out.println("Size = " + A.size());
         System.out.println("Max = " + A.max() + "\nMin = " + A.min());
-        A.inorder();   System.out.println();
+        A.inOrder();   System.out.println();
         A.postorder(); System.out.println();
         A.preorder();  System.out.println();
 
@@ -33,7 +33,7 @@ public class Main {
         A2.delete('B');
         System.out.println("Size = " + A2.size());
         System.out.println("Max = " + A2.max() + "\nMin = " + A2.min());
-        A2.inorder();   System.out.println();
+        A2.inOrder();   System.out.println();
         A2.postorder(); System.out.println();
         A2.preorder();  System.out.println();
 

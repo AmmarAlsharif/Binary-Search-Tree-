@@ -1,5 +1,6 @@
 package com.company.datastructure;
 
+import com.company.datastructure.abstraction.BinaryTree;
 import com.company.datastructure.exceptions.ValueNotFoundException;
 import com.company.datastructure.exceptions.EmptyTreeException;
 import com.company.datastructure.exceptions.NoSuccessorException;
@@ -7,7 +8,7 @@ import com.company.datastructure.exceptions.NoSuccessorException;
 import java.util.ArrayList;
 
 
-public class BinarySearchTree<T extends Comparable<T>> {
+public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> {
     private BTNode root;
 
     private int size;
@@ -90,7 +91,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     // find the successor element of value in the tree
-    public T successorValueOf(T value) throws EmptyTreeException, ValueNotFoundException {
+    public T successor(T value) throws EmptyTreeException, ValueNotFoundException {
         if (isEmpty())
             throw new EmptyTreeException();
         BTNode node1 = getNodeWithValue(root, value);
@@ -126,9 +127,11 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return pointer2;
     }
 
-    private boolean isEmpty() {
+    public boolean isEmpty() {
         return root == null;
     }
+
+
 
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
@@ -243,11 +246,13 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     // inorder function
-    public ArrayList<T> inorder() {
+    public ArrayList<T> inOrder() {
         ArrayList<T> orderedItems = new ArrayList<>();
         inorder(root, orderedItems);
         return orderedItems;
     }
+
+
 
     private void inorder(BTNode ptr, ArrayList<T> orderedItems) {
         if (ptr == null) {
@@ -272,6 +277,16 @@ public class BinarySearchTree<T extends Comparable<T>> {
                 }
             }
         }.postorder(root);
+    }
+
+    @Override
+    public Iterable<T> preOrder() {
+
+        return null;
+    }
+    @Override
+    public Iterable<T> postOrder() {
+        return null;
     }
 
     public int size() {

@@ -28,7 +28,7 @@ class BinarySearchTreeTest {
         expectedOrderedIntegers.add(4);
         expectedOrderedIntegers.add(5);
         expectedOrderedIntegers.add(6);
-        ArrayList<Integer> actualOrderedIntegers = tree.inorder();
+        ArrayList<Integer> actualOrderedIntegers = tree.inOrder();
         assertEquals(expectedOrderedIntegers, actualOrderedIntegers);
     }
 
@@ -48,7 +48,7 @@ class BinarySearchTreeTest {
         expectedOrderedStrings.add("aA");
         expectedOrderedStrings.add("aa");
 
-        ArrayList<String> actualOrderedStrings = treeOfStrings.inorder();
+        ArrayList<String> actualOrderedStrings = treeOfStrings.inOrder();
         assertEquals(expectedOrderedStrings, actualOrderedStrings);
 
     }
@@ -69,7 +69,7 @@ class BinarySearchTreeTest {
         expectedOrderedStrings.add('b');
         expectedOrderedStrings.add('c');
 
-        ArrayList<Character> actualOrderedStrings = treeOfStrings.inorder();
+        ArrayList<Character> actualOrderedStrings = treeOfStrings.inOrder();
         assertEquals(expectedOrderedStrings, actualOrderedStrings);
 
     }
@@ -186,7 +186,7 @@ class BinarySearchTreeTest {
     @Test
     void givenNull_whenCallingSuccessor_thenThrowException() {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-        assertThrows(EmptyTreeException.class, () -> tree.successorValueOf(null));
+        assertThrows(EmptyTreeException.class, () -> tree.successor(null));
     }
 
     @Test
@@ -198,7 +198,7 @@ class BinarySearchTreeTest {
         tree.add(2);
         tree.add(3);
         NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
-                () -> tree.successorValueOf(5));
+                () -> tree.successor(5));
         assertEquals("Value \"5\" has no successor", thrown.getMessage());
     }
 
@@ -207,7 +207,7 @@ class BinarySearchTreeTest {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         tree.add(3);
         tree.add(-6);
-        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successorValueOf(5));
+        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successor(5));
         assertEquals("Value \"5\" not found", thrown.getMessage());
     }
 
@@ -241,7 +241,7 @@ class BinarySearchTreeTest {
         expectedValues.add("word4");
 
         tree.delete("word2");
-        ArrayList<String> actualValues = tree.inorder();
+        ArrayList<String> actualValues = tree.inOrder();
         assertEquals(expectedValues, actualValues);
     }
 }
