@@ -1,9 +1,9 @@
 package com.company.datastructure;
 
-import com.company.datastructure.exceptions.ValueNotFoundException;
-import com.company.datastructure.exceptions.EmptyTreeException;
-import com.company.datastructure.exceptions.NoSuccessorException;
+import com.company.datastructure.exceptions.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 
@@ -13,18 +13,33 @@ class BinarySearchTreeTest {
 
 
     @Test
-    void givenIntegers_whenCallingAdd_thenSuccess() {
+    void givenNullValue_whenCallingInsert_thenThrowException() {
+        BinarySearchTree<Character> tree = new BinarySearchTree<>();
+        assertThrows(NullValueException.class, () -> tree.insert(null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ABB", "ACB", "ABC"})
+    void givenDuplicateValue_whenCallingInsert_thenThrowException(String value) {
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
+        tree.insert("ABB");
+        tree.insert("ACB");
+        tree.insert("ABC");
+
+        assertThrows(DuplicateValueException.class, () -> tree.insert(value));
+    }
+
+    @Test
+    void givenIntegers_whenCallingInsert_thenSuccess() {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-        tree.add(5);
-        tree.add(4);
-        tree.add(4);
-        tree.add(6);
-        tree.add(-1);
-        tree.add(0);
+        tree.insert(5);
+        tree.insert(4);
+        tree.insert(6);
+        tree.insert(-1);
+        tree.insert(0);
         ArrayList<Integer> expectedOrderedIntegers = new ArrayList<>();
         expectedOrderedIntegers.add(-1);
         expectedOrderedIntegers.add(0);
-        expectedOrderedIntegers.add(4);
         expectedOrderedIntegers.add(4);
         expectedOrderedIntegers.add(5);
         expectedOrderedIntegers.add(6);
@@ -35,11 +50,11 @@ class BinarySearchTreeTest {
     @Test
     void givenStrings_whenCallingAdd_thenSuccess() {
         BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add("Ab");
-        treeOfStrings.add("aA");
-        treeOfStrings.add("AA");
-        treeOfStrings.add("aa");
-        treeOfStrings.add("AaA");
+        treeOfStrings.insert("Ab");
+        treeOfStrings.insert("aA");
+        treeOfStrings.insert("AA");
+        treeOfStrings.insert("aa");
+        treeOfStrings.insert("AaA");
 
         ArrayList<String> expectedOrderedStrings = new ArrayList<>();
         expectedOrderedStrings.add("AA");
@@ -54,13 +69,13 @@ class BinarySearchTreeTest {
     }
 
     @Test
-    void givenCharacters_whenCallingAdd_thenSuccess() {
+    void givenCharacters_whenCallingInsert_thenSuccess() {
         BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add('A');
-        treeOfStrings.add('a');
-        treeOfStrings.add('b');
-        treeOfStrings.add('B');
-        treeOfStrings.add('c');
+        treeOfStrings.insert('A');
+        treeOfStrings.insert('a');
+        treeOfStrings.insert('b');
+        treeOfStrings.insert('B');
+        treeOfStrings.insert('c');
 
         ArrayList<Character> expectedOrderedStrings = new ArrayList<>();
         expectedOrderedStrings.add('A');
@@ -77,11 +92,11 @@ class BinarySearchTreeTest {
     @Test
     void givenIncludedDoubles_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<Double> treeOfDoubles = new BinarySearchTree<>();
-        treeOfDoubles.add(5.2);
-        treeOfDoubles.add(2.3);
-        treeOfDoubles.add(-5.0);
-        treeOfDoubles.add(10.0);
-        treeOfDoubles.add(-11.2);
+        treeOfDoubles.insert(5.2);
+        treeOfDoubles.insert(2.3);
+        treeOfDoubles.insert(-5.0);
+        treeOfDoubles.insert(10.0);
+        treeOfDoubles.insert(-11.2);
         assertTrue(treeOfDoubles.contains(2.3));
         assertTrue(treeOfDoubles.contains(5.2));
         assertTrue(treeOfDoubles.contains(10.0));
@@ -92,10 +107,10 @@ class BinarySearchTreeTest {
     @Test
     void givenIncludedStrings_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add("AB");
-        treeOfStrings.add("BA");
-        treeOfStrings.add("CD");
-        treeOfStrings.add("DC");
+        treeOfStrings.insert("AB");
+        treeOfStrings.insert("BA");
+        treeOfStrings.insert("CD");
+        treeOfStrings.insert("DC");
         assertTrue(treeOfStrings.contains("AB"));
         assertTrue(treeOfStrings.contains("BA"));
         assertTrue(treeOfStrings.contains("CD"));
@@ -105,10 +120,10 @@ class BinarySearchTreeTest {
     @Test
     void givenIncludedCharacters_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add('A');
-        treeOfStrings.add('B');
-        treeOfStrings.add('a');
-        treeOfStrings.add('C');
+        treeOfStrings.insert('A');
+        treeOfStrings.insert('B');
+        treeOfStrings.insert('a');
+        treeOfStrings.insert('C');
         assertTrue(treeOfStrings.contains('A'));
         assertTrue(treeOfStrings.contains('B'));
         assertTrue(treeOfStrings.contains('a'));
@@ -119,68 +134,66 @@ class BinarySearchTreeTest {
     @Test
     void givenExcludedDoubles_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<Double> treeOfDoubles = new BinarySearchTree<>();
-        treeOfDoubles.add(5.2);
-        treeOfDoubles.add(2.3);
-        treeOfDoubles.add(-5.0);
-        treeOfDoubles.add(10.0);
-        treeOfDoubles.add(-11.2);
+        treeOfDoubles.insert(5.2);
+        treeOfDoubles.insert(2.3);
+        treeOfDoubles.insert(-5.0);
+        treeOfDoubles.insert(10.0);
+        treeOfDoubles.insert(-11.2);
         assertFalse(treeOfDoubles.contains(1.0));
     }
 
     @Test
     void givenExcludedStrings_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<String> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add("AB");
-        treeOfStrings.add("BA");
-        treeOfStrings.add("CD");
-        treeOfStrings.add("DC");
+        treeOfStrings.insert("AB");
+        treeOfStrings.insert("BA");
+        treeOfStrings.insert("CD");
+        treeOfStrings.insert("DC");
         assertFalse(treeOfStrings.contains("A"));
     }
 
     @Test
     void givenExcludedCharacters_whenCallingContains_thenReturnAsExpected() {
         BinarySearchTree<Character> treeOfStrings = new BinarySearchTree<>();
-        treeOfStrings.add('A');
-        treeOfStrings.add('B');
-        treeOfStrings.add('a');
-        treeOfStrings.add('C');
+        treeOfStrings.insert('A');
+        treeOfStrings.insert('B');
+        treeOfStrings.insert('a');
+        treeOfStrings.insert('C');
         assertFalse(treeOfStrings.contains('c'));
     }
 
     @Test
     void givenEmptyTree_whenCallingMin_thenThrowException() {
-        BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
-        assertThrows(EmptyTreeException.class, emptyTree::min);
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        assertThrows(EmptyTreeException.class, tree::min);
     }
 
     @Test
     void givenValidTree_whenCallingMin_thenReturnAsExpected() {
-        BinarySearchTree<Character> treeOfCharacters = new BinarySearchTree<>();
-        treeOfCharacters.add('b');
-        treeOfCharacters.add('C');
-        treeOfCharacters.add('g');
-        treeOfCharacters.add('b');
-        treeOfCharacters.add('a');
-        treeOfCharacters.add('A');
-        assertEquals('A', treeOfCharacters.min());
+        BinarySearchTree<Character> tree = new BinarySearchTree<>();
+        tree.insert('b');
+        tree.insert('C');
+        tree.insert('g');
+        tree.insert('a');
+        tree.insert('A');
+        assertEquals('A', tree.min());
     }
 
     @Test
     void givenEmptyTree_whenCallingMax_thenThrowException() {
-        BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
-        assertThrows(EmptyTreeException.class, emptyTree::max);
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        assertThrows(EmptyTreeException.class, tree::max);
     }
 
     @Test
     void givenValidTree_whenCallingMax_thenReturnAsExpected() {
-        BinarySearchTree<Character> treeOfCharacters = new BinarySearchTree<>();
-        treeOfCharacters.add('b');
-        treeOfCharacters.add('C');
-        treeOfCharacters.add('g');
-        treeOfCharacters.add('b');
-        treeOfCharacters.add('a');
-        treeOfCharacters.add('A');
-        assertEquals('g', treeOfCharacters.max());
+        BinarySearchTree<Character> tree = new BinarySearchTree<>();
+        tree.insert('b');
+        tree.insert('C');
+        tree.insert('g');
+        tree.insert('a');
+        tree.insert('A');
+        assertEquals('g', tree.max());
     }
 
     @Test
@@ -192,11 +205,11 @@ class BinarySearchTreeTest {
     @Test
     void givenElementWithNoSuccessor_whenCallingSuccessor_thenThrowException() {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-        tree.add(1);
-        tree.add(5);
-        tree.add(4);
-        tree.add(2);
-        tree.add(3);
+        tree.insert(1);
+        tree.insert(5);
+        tree.insert(4);
+        tree.insert(2);
+        tree.insert(3);
         NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
                 () -> tree.successor(5));
         assertEquals("Value \"5\" has no successor", thrown.getMessage());
@@ -205,8 +218,8 @@ class BinarySearchTreeTest {
     @Test
     void givenNoneIncludedValue_whenCallingSuccessor_thenThrowException() {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-        tree.add(3);
-        tree.add(-6);
+        tree.insert(3);
+        tree.insert(-6);
         ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successor(5));
         assertEquals("Value \"5\" not found", thrown.getMessage());
     }
@@ -220,9 +233,9 @@ class BinarySearchTreeTest {
     @Test
     void givenNonIncludedValue_whenDelete_thenThrowException() {
         BinarySearchTree<String> tree = new BinarySearchTree<>();
-        tree.add("string1");
-        tree.add("string2");
-        tree.add("string3");
+        tree.insert("string1");
+        tree.insert("string2");
+        tree.insert("string3");
         ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.delete("string"));
         assertEquals("Value \"string\" not found", thrown.getMessage());
     }
@@ -230,18 +243,43 @@ class BinarySearchTreeTest {
     @Test
     void givenIncludedValue_whenCallingDelete_thenSuccess() {
         BinarySearchTree<String> tree = new BinarySearchTree<>();
-        tree.add("word4");
-        tree.add("word1");
-        tree.add("word3");
-        tree.add("word2");
+        tree.insert("word4");
+        tree.insert("word1");
+        tree.insert("word3");
+        tree.insert("word2");
 
         ArrayList<String> expectedValues = new ArrayList<>();
         expectedValues.add("word1");
         expectedValues.add("word3");
         expectedValues.add("word4");
 
+        // TODO fix this test, since it produces NullPointerException
         tree.delete("word2");
         ArrayList<String> actualValues = tree.inOrder();
         assertEquals(expectedValues, actualValues);
+    }
+
+    @Test
+    void givenEmptyTree_whenCallingPreOrder_thenThrowException() {
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
+        assertThrows(EmptyTreeException.class, tree::preOrder);
+    }
+
+    @Test
+    void givenNoData_whenCallingPreOrder_thenSuccess() {
+        BinarySearchTree<Character> tree = new BinarySearchTree<>();
+        tree.insert('B');
+        tree.insert('C');
+        tree.insert('A');
+        tree.insert('D');
+
+        ArrayList<Character> expected = new ArrayList<>();
+        expected.add('B');
+        expected.add('A');
+        expected.add('C');
+        expected.add('D');
+
+        ArrayList<Character> actual = tree.preOrder();
+        assertEquals(expected, actual);
     }
 }

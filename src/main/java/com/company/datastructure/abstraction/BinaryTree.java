@@ -2,7 +2,7 @@ package com.company.datastructure.abstraction;
 
 public interface BinaryTree<T> {
 
-    void add(T value);
+    void insert(T value);
     void delete(T value);
     int size();
     boolean contains(T value);

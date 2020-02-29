@@ -3,17 +3,17 @@ package com.company.datastructure;
 public class Main {
     public static void main(String[] args) {
         BinarySearchTree<Integer> A = new BinarySearchTree<>();
-        A.add(15);
-        A.add(18);
-        A.add(17);
-        A.add(20);
-        A.add(6);
-        A.add(7);
-        A.add(13);
-        A.add(9);
-        A.add(3);
-        A.add(2);
-        A.add(4);
+        A.insert(15);
+        A.insert(18);
+        A.insert(17);
+        A.insert(20);
+        A.insert(6);
+        A.insert(7);
+        A.insert(13);
+        A.insert(9);
+        A.insert(3);
+        A.insert(2);
+        A.insert(4);
         System.out.println("Size = " + A.size());
         A.delete(6);
         System.out.println("Size = " + A.size());
@@ -24,11 +24,11 @@ public class Main {
 
 
         BinarySearchTree<Character> A2 = new BinarySearchTree<>();
-        A2.add('B');
-        A2.add('A');
-        A2.add('E');
-        A2.add('C');
-        A2.add('D');
+        A2.insert('B');
+        A2.insert('A');
+        A2.insert('E');
+        A2.insert('C');
+        A2.insert('D');
         System.out.println("Size = " + A2.size());
         A2.delete('B');
         System.out.println("Size = " + A2.size());

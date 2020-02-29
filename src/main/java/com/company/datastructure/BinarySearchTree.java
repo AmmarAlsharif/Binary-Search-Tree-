@@ -1,53 +1,56 @@
 package com.company.datastructure;
 
 import com.company.datastructure.abstraction.BinaryTree;
-import com.company.datastructure.exceptions.ValueNotFoundException;
-import com.company.datastructure.exceptions.EmptyTreeException;
-import com.company.datastructure.exceptions.NoSuccessorException;
+import com.company.datastructure.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 
 public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> {
-    private BTNode root;
+    private Node root;
 
     private int size;
 
-    // add node to the tree
-    public void add(T element) {
-        BTNode newNode = new BTNode(element);
+    @Override
+    public void insert(T data) {
+        if (data == null)
+            throw new NullValueException();
         if (isEmpty()) {
-            root = newNode;
+            root = new Node(data);
             return;
         }
-        BTNode pointer = root;
-        while (pointer != null) {
-            if (newNode.data.compareTo(pointer.data) > 0) {
-                if (!pointer.isHasRight())
-                    break;
-                pointer = goRight(pointer);
-            } else {
-                if (!pointer.isHasLeft())
-                    break;
-                pointer = goLeft(pointer);
+        Node current = root;
+        Node parent = current;
+        while (current != null) {
+            parent = current;
+
+            if (data.compareTo(current.data) == 0)
+                throw new DuplicateValueException();
+
+            if (data.compareTo(current.data) < 0) {
+                current = goLeft(current);
+                continue;
             }
+            if (data.compareTo(current.data) > 0)
+                current = goRight(current);
         }
-        if (newNode.data.compareTo(pointer.data) > 0) {
-            pointer.right = newNode;
-            newNode.parent = pointer;
-        } else {
-            pointer.left = newNode;
-            newNode.parent = pointer;
-        }
+
+        if (data.compareTo(parent.data) < 0)
+            parent.left = new Node(data);
+        else
+            parent.right = new Node(data);
+
         size++;
     }
 
     // search for an element k in the tree
+    @Override
     public boolean contains(T element) {
         return contains(root, element);
     }
 
-    private boolean contains(BTNode root, T element) {
+    private boolean contains(Node root, T element) {
         if (root == null)
             return false;
         if (element.compareTo(root.data) == 0)
@@ -58,7 +61,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // we need this function in successor function
-    private BTNode getNodeWithValue(BTNode startingNode, T value) throws ValueNotFoundException {
+    private Node getNodeWithValue(Node startingNode, T value) throws ValueNotFoundException {
         if (startingNode == null)
             throw new ValueNotFoundException("Value \"" + value + "\" not found");
         if (value.compareTo(startingNode.data) == 0)
@@ -69,10 +72,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // find the minimum element in the tree
+    @Override
     public T min() {
         if (isEmpty())
             throw new EmptyTreeException();
-        BTNode pointer = root;
+        Node pointer = root;
         while (pointer.isHasLeft()) {
             pointer = goLeft(pointer);
         }
@@ -80,10 +84,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // find the maximum element in the tree
+    @Override
     public T max() {
         if (isEmpty())
             throw new EmptyTreeException();
-        BTNode pointer = root;
+        Node pointer = root;
         while (pointer.isHasRight()) {
             pointer = goRight(pointer);
         }
@@ -91,10 +96,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // find the successor element of value in the tree
+    @Override
     public T successor(T value) throws EmptyTreeException, ValueNotFoundException {
         if (isEmpty())
             throw new EmptyTreeException();
-        BTNode node1 = getNodeWithValue(root, value);
+        Node node1 = getNodeWithValue(root, value);
         if (node1.isHasRight()) {
             node1 = goRight(node1);
             while (node1.isHasLeft()) {
@@ -102,7 +108,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             }
             return node1.data;
         }
-        BTNode pointer2 = node1.parent;
+        Node pointer2 = node1.parent;
         while (pointer2 != null) {
             if (pointer2.left == node1)
                 return pointer2.left.data;
@@ -112,31 +118,30 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         throw new NoSuccessorException("Value \"" + value + "\" has no successor");
     }
 
-    private BTNode goLeft(BTNode node1) {
-        node1 = node1.left;
-        return node1;
+    private Node goLeft(Node node) {
+        return node.left;
     }
 
-    private BTNode goRight(BTNode node1) {
+    private Node goRight(Node node1) {
         node1 = node1.right;
         return node1;
     }
 
-    private BTNode goUp(BTNode pointer2) {
+    private Node goUp(Node pointer2) {
         pointer2 = pointer2.parent;
         return pointer2;
     }
 
+    @Override
     public boolean isEmpty() {
         return root == null;
     }
 
 
-
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
-    private BTNode getNodeWithValue(T x) {
-        BTNode ptr = getNodeWithValue(root, x);
+    private Node getNodeWithValue(T x) {
+        Node ptr = getNodeWithValue(root, x);
         if (ptr.isHasRight()) {
             ptr = goRight(ptr);
             while (ptr.isHasLeft()) {
@@ -144,7 +149,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             }
             return ptr;
         } else {
-            BTNode ptr2 = ptr.parent;
+            Node ptr2 = ptr.parent;
             while (ptr2 != null) {
                 if (ptr2.left == ptr) break;
                 else {
@@ -161,14 +166,15 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // delete an value from the tree
+    @Override
     public void delete(T value) {
         if (isEmpty())
             throw new EmptyTreeException();
-        BTNode ptr = getNodeWithValue(root, value);
+        Node ptr = getNodeWithValue(root, value);
         if (!ptr.isHasLeft() && !ptr.isHasRight()) {
             if (ptr == root) root = null;
             else {
-                BTNode ptr2 = ptr.parent;
+                Node ptr2 = ptr.parent;
                 if (ptr2.left == ptr)
                     ptr2.left = null;
                 else
@@ -188,7 +194,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
                 root.parent = null;
                 return;
             }
-            BTNode ptr2 = ptr.parent;
+            Node ptr2 = ptr.parent;
             if (ptr == ptr2.left) {
                 if (ptr.isHasLeft())
                     ptr2.left = ptr.left;
@@ -205,7 +211,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             size--;
             return;
         }
-        BTNode succ = getNodeWithValue(value);
+        Node succ = getNodeWithValue(value);
         ptr.data = succ.data;
         deleteN(succ);
         size--;
@@ -213,12 +219,12 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
     // we need this method to delete the successor Node
     // of the node that has 2 children
-    private void deleteN(BTNode ptr) {
+    private void deleteN(Node ptr) {
         if (ptr.right == null) {
             ptr = goUp(ptr);
             ptr.right = null;
         } else {
-            BTNode ptr2 = ptr.parent;
+            Node ptr2 = ptr.parent;
             if (ptr == ptr2.left) {
                 ptr2.left = ptr.right;
                 ptr2.left.parent = ptr2;
@@ -234,7 +240,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         class pre {
         }
         new pre() {
-            public void preorder(BTNode ptr) {
+            public void preorder(Node ptr) {
                 if (ptr == null) {
                 } else {
                     System.out.print(ptr.data + " ");
@@ -248,18 +254,17 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     // inorder function
     public ArrayList<T> inOrder() {
         ArrayList<T> orderedItems = new ArrayList<>();
-        inorder(root, orderedItems);
+        inOrder(root, orderedItems);
         return orderedItems;
     }
 
 
-
-    private void inorder(BTNode ptr, ArrayList<T> orderedItems) {
+    private void inOrder(Node ptr, ArrayList<T> orderedItems) {
         if (ptr == null) {
         } else {
-            inorder(ptr.left, orderedItems);
+            inOrder(ptr.left, orderedItems);
             orderedItems.add((T) ptr.data);
-            inorder(ptr.right, orderedItems);
+            inOrder(ptr.right, orderedItems);
         }
     }
 
@@ -268,7 +273,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         class post {
         }
         new post() {
-            public void postorder(BTNode ptr) {
+            public void postorder(Node ptr) {
                 if (ptr == null) {
                 } else {
                     postorder(ptr.left);
@@ -280,12 +285,24 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     @Override
-    public Iterable<T> preOrder() {
-
-        return null;
+    public ArrayList<T> preOrder() {
+        if (isEmpty())
+            throw new EmptyTreeException();
+        ArrayList<T> result = new ArrayList<>();
+        preOrder(result::add, root);
+        return result;
     }
+
+    private void preOrder(Consumer<T> output, Node node) {
+        if (node == null)
+            return;
+        output.accept(node.data);
+        preOrder(output, node.left);
+        preOrder(output, node.right);
+    }
+
     @Override
-    public Iterable<T> postOrder() {
+    public ArrayList<T> postOrder() {
         return null;
     }
 
@@ -293,14 +310,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return size;
     }
 
-    private class BTNode {
-
-        private BTNode left;
-        private BTNode right;
-        private BTNode parent;
+    private class Node {
+        private Node left;
+        private Node right;
+        private Node parent;
         private T data;
 
-        private BTNode(T data) {
+        private Node(T data) {
             this.data = data;
         }
 
@@ -310,10 +326,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         private boolean isHasLeft() {
             return this.left != null;
-        }
-
-        private boolean isHasParent() {
-            return this.parent != null;
         }
     }
 }
