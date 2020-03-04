@@ -24,15 +24,12 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         Node parent = current;
         while (current != null) {
             parent = current;
-
             if (data.compareTo(current.data) == 0)
                 throw new DuplicateValueException();
 
-            if (data.compareTo(current.data) < 0) {
+            if (data.compareTo(current.data) < 0)
                 current = goLeft(current);
-                continue;
-            }
-            if (data.compareTo(current.data) > 0)
+            else
                 current = goRight(current);
         }
 
@@ -95,11 +92,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return pointer.data;
     }
 
+//    public Node successorNode(T value){
+//        if (isEmpty())
+//            throw new
+//    }
     // find the successor element of value in the tree
-    @Override
-    public T successor(T value) throws EmptyTreeException, ValueNotFoundException {
-        if (isEmpty())
-            throw new EmptyTreeException();
+
+    private T findSuccessor(T value) {
         Node node1 = getNodeWithValue(root, value);
         if (node1.isHasRight()) {
             node1 = goRight(node1);
@@ -116,6 +115,15 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             pointer2 = goUp(pointer2);
         }
         throw new NoSuccessorException("Value \"" + value + "\" has no successor");
+    }
+
+    @Override
+    public T successor(T value) throws EmptyTreeException, ValueNotFoundException {
+        if (isEmpty())
+            throw new EmptyTreeException();
+        if (value == null)
+            throw new IllegalArgumentException();
+        return findSuccessor(value);
     }
 
     private Node goLeft(Node node) {
@@ -183,6 +191,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         }
         if (current == null)
             return;
+
         if (value.compareTo(parent.data) > 0) {
             // TODO complete fixing this method
         }
