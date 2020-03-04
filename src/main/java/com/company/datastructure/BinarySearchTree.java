@@ -61,14 +61,14 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     }
 
     // we need this function in successor function
-    private Node getNodeWithValue(Node startingNode, T value) throws ValueNotFoundException {
-        if (startingNode == null)
+    private Node getNodeWithValue(Node node, T value) throws ValueNotFoundException {
+        if (node == null)
             throw new ValueNotFoundException("Value \"" + value + "\" not found");
-        if (value.compareTo(startingNode.data) == 0)
-            return startingNode;
-        if (value.compareTo(startingNode.data) < 0)
-            return getNodeWithValue(startingNode.left, value);
-        return getNodeWithValue(startingNode.right, value);
+        if (value.compareTo(node.data) == 0)
+            return node;
+        if (value.compareTo(node.data) < 0)
+            return getNodeWithValue(node.left, value);
+        return getNodeWithValue(node.right, value);
     }
 
     // find the minimum element in the tree
@@ -170,6 +170,24 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     public void delete(T value) {
         if (isEmpty())
             throw new EmptyTreeException();
+        Node current = root;
+        Node parent = null;
+        while (current != null) {
+            parent = current;
+            if (value.compareTo(current.data) < 0)
+                current = goRight(current);
+            if (value.compareTo(current.data) > 0)
+                current = goLeft(current);
+            if (value.compareTo(current.data) == 0)
+                break;
+        }
+        if (current == null)
+            return;
+        if (value.compareTo(parent.data) > 0) {
+            // TODO complete fixing this method
+        }
+
+
         Node ptr = getNodeWithValue(root, value);
         if (!ptr.isHasLeft() && !ptr.isHasRight()) {
             if (ptr == root) root = null;
