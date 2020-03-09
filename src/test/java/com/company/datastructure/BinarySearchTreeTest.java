@@ -240,18 +240,17 @@ class BinarySearchTreeTest {
     }
 
     @Test
-    @Disabled
     void givenNonIncludedValue_whenDelete_thenThrowException() {
         BinarySearchTree<String> tree = new BinarySearchTree<>();
         tree.insert("string1");
         tree.insert("string2");
         tree.insert("string3");
-        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.delete("string"));
+        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class,
+                () -> tree.delete("string"));
         assertEquals("Value \"string\" not found", thrown.getMessage());
     }
 
     @Test
-    @Disabled
     void givenIncludedValue_whenCallingDelete_thenSuccess() {
         BinarySearchTree<String> tree = new BinarySearchTree<>();
         tree.insert("word4");
@@ -264,7 +263,6 @@ class BinarySearchTreeTest {
         expectedValues.add("word3");
         expectedValues.add("word4");
 
-        // TODO fix this test, since it produces NullPointerException
         tree.delete("word2");
         ArrayList<String> actualValues = tree.inOrder();
         assertEquals(expectedValues, actualValues);
@@ -277,7 +275,7 @@ class BinarySearchTreeTest {
     }
 
     @Test
-    void givenNoData_whenCallingPreOrder_thenSuccess() {
+    void givenNonEmptyTree_whenCallingPreOrder_thenSuccess() {
         BinarySearchTree<Character> tree = new BinarySearchTree<>();
         tree.insert('B');
         tree.insert('C');
@@ -291,6 +289,32 @@ class BinarySearchTreeTest {
         expected.add('D');
 
         ArrayList<Character> actual = tree.preOrder();
+        assertEquals(expected, actual);
+    }
+
+
+    @Test
+    void givenEmptyTree_whenCallingInOrder_thenThrowException() {
+        BinarySearchTree<String> tree = new BinarySearchTree<>();
+        assertThrows(EmptyTreeException.class, tree::inOrder);
+    }
+
+
+    @Test
+    void givenNonEmptyTree_whenCallingInOrder_thenSuccess() {
+        BinarySearchTree<Character> tree = new BinarySearchTree<>();
+        tree.insert('B');
+        tree.insert('C');
+        tree.insert('A');
+        tree.insert('D');
+
+        ArrayList<Character> expected = new ArrayList<>();
+        expected.add('A');
+        expected.add('B');
+        expected.add('C');
+        expected.add('D');
+
+        ArrayList<Character> actual = tree.inOrder();
         assertEquals(expected, actual);
     }
 }

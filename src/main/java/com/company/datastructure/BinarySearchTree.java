@@ -32,43 +32,42 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             else
                 current = goRight(current);
         }
-
-        if (data.compareTo(parent.data) < 0)
+        if (data.compareTo(parent.data) < 0) {
             parent.left = new Node(data);
-        else
+            parent.left.parent = parent;
+        } else {
             parent.right = new Node(data);
-
+            parent.right.parent = parent;
+        }
         size++;
     }
 
-    // search for an element k in the tree
     @Override
-    public boolean contains(T element) {
-        return contains(root, element);
+    public boolean contains(T data) {
+        return contains(root, data);
     }
 
-    private boolean contains(Node root, T element) {
+    private boolean contains(Node root, T data) {
         if (root == null)
             return false;
-        if (element.compareTo(root.data) == 0)
+        if (data.compareTo(root.data) == 0)
             return true;
-        if (element.compareTo(root.data) < 0)
-            return contains(root.left, element);
-        return contains(root.right, element);
+        if (data.compareTo(root.data) < 0)
+            return contains(root.left, data);
+        return contains(root.right, data);
     }
 
     // we need this function in successor function
-    private Node getNodeWithValue(Node node, T value) throws ValueNotFoundException {
+    private Node getNodeWithValue(Node node, T data) throws ValueNotFoundException {
         if (node == null)
-            throw new ValueNotFoundException("Value \"" + value + "\" not found");
-        if (value.compareTo(node.data) == 0)
+            throw new ValueNotFoundException("Value \"" + data + "\" not found");
+        if (data.compareTo(node.data) == 0)
             return node;
-        if (value.compareTo(node.data) < 0)
-            return getNodeWithValue(node.left, value);
-        return getNodeWithValue(node.right, value);
+        if (data.compareTo(node.data) < 0)
+            return getNodeWithValue(node.left, data);
+        return getNodeWithValue(node.right, data);
     }
 
-    // find the minimum element in the tree
     @Override
     public T min() {
         if (isEmpty())
@@ -80,7 +79,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return pointer.data;
     }
 
-    // find the maximum element in the tree
     @Override
     public T max() {
         if (isEmpty())
@@ -92,38 +90,32 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return pointer.data;
     }
 
-//    public Node successorNode(T value){
-//        if (isEmpty())
-//            throw new
-//    }
-    // find the successor element of value in the tree
-
-    private T findSuccessor(T value) {
-        Node node1 = getNodeWithValue(root, value);
-        if (node1.isHasRight()) {
-            node1 = goRight(node1);
-            while (node1.isHasLeft()) {
-                node1 = goLeft(node1);
+    private T findSuccessor(T data) {
+        Node current = getNodeWithValue(root, data);
+        if (current.isHasRight()) {
+            current = goRight(current);
+            while (current.isHasLeft()) {
+                current = goLeft(current);
             }
-            return node1.data;
+            return current.data;
         }
-        Node pointer2 = node1.parent;
-        while (pointer2 != null) {
-            if (pointer2.left == node1)
-                return pointer2.left.data;
-            node1 = pointer2;
-            pointer2 = goUp(pointer2);
+        Node parent = current.parent;
+        while (parent != null) {
+            if (parent.left == current)
+                return parent.left.data;
+            current = parent;
+            parent = goUp(parent);
         }
-        throw new NoSuccessorException("Value \"" + value + "\" has no successor");
+        throw new NoSuccessorException("Value \"" + data + "\" has no successor");
     }
 
     @Override
-    public T successor(T value) throws EmptyTreeException, ValueNotFoundException {
+    public T successor(T data) throws EmptyTreeException, ValueNotFoundException {
         if (isEmpty())
             throw new EmptyTreeException();
-        if (value == null)
+        if (data == null)
             throw new IllegalArgumentException();
-        return findSuccessor(value);
+        return findSuccessor(data);
     }
 
     private Node goLeft(Node node) {
@@ -148,104 +140,57 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
-    private Node getNodeWithValue(T x) {
-        Node ptr = getNodeWithValue(root, x);
-        if (ptr.isHasRight()) {
-            ptr = goRight(ptr);
-            while (ptr.isHasLeft()) {
-                ptr = goLeft(ptr);
+    private Node successor(Node current) {
+        if (current.isHasRight()) {
+            current = goRight(current);
+            while (current.isHasLeft()) {
+                current = goLeft(current);
             }
-            return ptr;
+            return current;
         } else {
-            Node ptr2 = ptr.parent;
-            while (ptr2 != null) {
-                if (ptr2.left == ptr) break;
+            Node parent = current.parent;
+            while (parent != null) {
+                if (parent.left == current) break;
                 else {
-                    ptr = ptr2;
-                    ptr2 = goUp(ptr2);
+                    current = parent;
+                    parent = goUp(parent);
                 }
             }
-
-            if (ptr2 == null)
-                return null;
-            else
-                return ptr2;
+            return parent;
         }
     }
 
-    // delete an value from the tree
     @Override
-    public void delete(T value) {
+    public void delete(T data) {
         if (isEmpty())
             throw new EmptyTreeException();
-        Node current = root;
-        Node parent = null;
-        while (current != null) {
-            parent = current;
-            if (value.compareTo(current.data) < 0)
-                current = goRight(current);
-            if (value.compareTo(current.data) > 0)
-                current = goLeft(current);
-            if (value.compareTo(current.data) == 0)
-                break;
-        }
-        if (current == null)
-            return;
-
-        if (value.compareTo(parent.data) > 0) {
-            // TODO complete fixing this method
-        }
-
-
-        Node ptr = getNodeWithValue(root, value);
-        if (!ptr.isHasLeft() && !ptr.isHasRight()) {
-            if (ptr == root) root = null;
-            else {
-                Node ptr2 = ptr.parent;
-                if (ptr2.left == ptr)
-                    ptr2.left = null;
-                else
-                    ptr2.right = null;
-            }
-            size--;
+        Node nodeToBeDeleted = getNodeWithValue(root, data);
+        if (nodeToBeDeleted.isHasLeft() && nodeToBeDeleted.isHasRight()) {
+            Node successorNode = successor(nodeToBeDeleted);
+            nodeToBeDeleted.data = successorNode.data;
+            deleteN(successorNode);
             return;
         }
-        if (!ptr.isHasLeft() || !ptr.isHasRight()) {
-            if (ptr == root && ptr.isHasLeft()) {
-                root = goLeft(root);
-                root.parent = null;
-                return;
-            }
-            if (ptr == root) {
-                root = goRight(root);
-                root.parent = null;
-                return;
-            }
-            Node ptr2 = ptr.parent;
-            if (ptr == ptr2.left) {
-                if (ptr.isHasLeft())
-                    ptr2.left = ptr.left;
-                else
-                    ptr2.left = ptr.right;
-                ptr2.left.parent = ptr2;
-                return;
-            }
-            if (ptr.isHasLeft())
-                ptr2.right = ptr.left;
-            else
-                ptr2.right = ptr.right;
-            ptr2.right.parent = ptr2;
-            size--;
-            return;
-        }
-        Node succ = getNodeWithValue(value);
-        ptr.data = succ.data;
-        deleteN(succ);
+
+        Node target;
+        if (nodeToBeDeleted.isHasRight())
+            target = nodeToBeDeleted.right;
+        else
+            target = nodeToBeDeleted.left;
+
+        if (nodeToBeDeleted.isLessThan(nodeToBeDeleted.parent))
+            nodeToBeDeleted.parent.left = target;
+        else
+            nodeToBeDeleted.parent.right = target;
+
+        if (!nodeToBeDeleted.isLeafNode())
+            target.parent = nodeToBeDeleted.parent;
+        nodeToBeDeleted.clean();
         size--;
     }
 
-    // we need this method to delete the successor Node
-    // of the node that has 2 children
+    //     we need this method to delete the successor Node
+//     of the node that has 2 children
     private void deleteN(Node ptr) {
         if (ptr.right == null) {
             ptr = goUp(ptr);
@@ -262,53 +207,22 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         }
     }
 
-    // preorder function
-    public void preorder() {
-        class pre {
-        }
-        new pre() {
-            public void preorder(Node ptr) {
-                if (ptr == null) {
-                } else {
-                    System.out.print(ptr.data + " ");
-                    preorder(ptr.left);
-                    preorder(ptr.right);
-                }
-            }
-        }.preorder(root);
-    }
-
-    // inorder function
+    @Override
     public ArrayList<T> inOrder() {
-        ArrayList<T> orderedItems = new ArrayList<>();
-        inOrder(root, orderedItems);
-        return orderedItems;
+        if (isEmpty())
+            throw new EmptyTreeException();
+        ArrayList<T> result = new ArrayList<>();
+        inOrder(root, result::add);
+        return result;
     }
 
 
-    private void inOrder(Node ptr, ArrayList<T> orderedItems) {
-        if (ptr == null) {
-        } else {
-            inOrder(ptr.left, orderedItems);
-            orderedItems.add((T) ptr.data);
-            inOrder(ptr.right, orderedItems);
-        }
-    }
-
-    // postorder function
-    public void postorder() {
-        class post {
-        }
-        new post() {
-            public void postorder(Node ptr) {
-                if (ptr == null) {
-                } else {
-                    postorder(ptr.left);
-                    postorder(ptr.right);
-                    System.out.print(ptr.data + " ");
-                }
-            }
-        }.postorder(root);
+    private void inOrder(Node node, Consumer<T> output) {
+        if (node == null)
+            return;
+        inOrder(node.left, output);
+        output.accept(node.data);
+        inOrder(node.right, output);
     }
 
     @Override
@@ -316,20 +230,21 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         if (isEmpty())
             throw new EmptyTreeException();
         ArrayList<T> result = new ArrayList<>();
-        preOrder(result::add, root);
+        preOrder(root, result::add);
         return result;
     }
 
-    private void preOrder(Consumer<T> output, Node node) {
+    private void preOrder(Node node, Consumer<T> output) {
         if (node == null)
             return;
         output.accept(node.data);
-        preOrder(output, node.left);
-        preOrder(output, node.right);
+        preOrder(node.left, output);
+        preOrder(node.right, output);
     }
 
     @Override
     public ArrayList<T> postOrder() {
+        // TODO
         return null;
     }
 
@@ -347,12 +262,26 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             this.data = data;
         }
 
+        private void clean() {
+            this.right = null;
+            this.left = null;
+            this.parent = null;
+        }
+
         private boolean isHasRight() {
             return this.right != null;
         }
 
         private boolean isHasLeft() {
             return this.left != null;
+        }
+
+        private boolean isLeafNode() {
+            return this.left == null && this.right == null;
+        }
+
+        private boolean isLessThan(Node node) {
+            return this.data.compareTo(node.data) < 0;
         }
     }
 }
