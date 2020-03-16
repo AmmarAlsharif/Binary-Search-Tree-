@@ -28,9 +28,9 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
                 throw new DuplicateValueException();
 
             if (data.compareTo(current.data) < 0)
-                current = goLeft(current);
+                current = current.goLeft();
             else
-                current = goRight(current);
+                current = current.goRight();
         }
         if (data.compareTo(parent.data) < 0) {
             parent.left = new Node(data);
@@ -73,8 +73,8 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         if (isEmpty())
             throw new EmptyTreeException();
         Node pointer = root;
-        while (pointer.isHasLeft()) {
-            pointer = goLeft(pointer);
+        while (pointer.hasLeft()) {
+            pointer = pointer.goLeft();
         }
         return pointer.data;
     }
@@ -84,18 +84,18 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         if (isEmpty())
             throw new EmptyTreeException();
         Node pointer = root;
-        while (pointer.isHasRight()) {
-            pointer = goRight(pointer);
+        while (pointer.hasRight()) {
+            pointer = pointer.goRight();
         }
         return pointer.data;
     }
 
     private T findSuccessor(T data) {
         Node current = getNodeWithValue(root, data);
-        if (current.isHasRight()) {
-            current = goRight(current);
-            while (current.isHasLeft()) {
-                current = goLeft(current);
+        if (current.hasRight()) {
+            current = current.goRight();
+            while (current.hasLeft()) {
+                current = current.goLeft();
             }
             return current.data;
         }
@@ -104,7 +104,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             if (parent.left == current)
                 return parent.left.data;
             current = parent;
-            parent = goUp(parent);
+            parent = parent.goUp();
         }
         throw new NoSuccessorException("Value \"" + data + "\" has no successor");
     }
@@ -118,20 +118,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return findSuccessor(data);
     }
 
-    private Node goLeft(Node node) {
-        return node.left;
-    }
-
-    private Node goRight(Node node1) {
-        node1 = node1.right;
-        return node1;
-    }
-
-    private Node goUp(Node pointer2) {
-        pointer2 = pointer2.parent;
-        return pointer2;
-    }
-
     @Override
     public boolean isEmpty() {
         return root == null;
@@ -141,10 +127,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
     // we need this method to determine the successor node
     // when we delete a Node with 2 children
     private Node successor(Node current) {
-        if (current.isHasRight()) {
-            current = goRight(current);
-            while (current.isHasLeft()) {
-                current = goLeft(current);
+        if (current.hasRight()) {
+            current = current.goRight();
+            while (current.hasLeft()) {
+                current = current.goLeft();
             }
             return current;
         } else {
@@ -153,7 +139,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
                 if (parent.left == current) break;
                 else {
                     current = parent;
-                    parent = goUp(parent);
+                    parent = parent.goUp();
                 }
             }
             return parent;
@@ -165,15 +151,14 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         if (isEmpty())
             throw new EmptyTreeException();
         Node nodeToBeDeleted = getNodeWithValue(root, data);
-        if (nodeToBeDeleted.isHasLeft() && nodeToBeDeleted.isHasRight()) {
+        if (nodeToBeDeleted.hasLeft() && nodeToBeDeleted.hasRight()) {
             Node successorNode = successor(nodeToBeDeleted);
             nodeToBeDeleted.data = successorNode.data;
-            deleteN(successorNode);
+            delete(successorNode);
             return;
         }
-
         Node target;
-        if (nodeToBeDeleted.isHasRight())
+        if (nodeToBeDeleted.hasRight())
             target = nodeToBeDeleted.right;
         else
             target = nodeToBeDeleted.left;
@@ -189,22 +174,21 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         size--;
     }
 
-    //     we need this method to delete the successor Node
+    //      we need this method to delete the successor Node
 //     of the node that has 2 children
-    private void deleteN(Node ptr) {
-        if (ptr.right == null) {
-            ptr = goUp(ptr);
-            ptr.right = null;
-        } else {
-            Node ptr2 = ptr.parent;
-            if (ptr == ptr2.left) {
-                ptr2.left = ptr.right;
-                ptr2.left.parent = ptr2;
-            } else {
-                ptr2.right = ptr.right;
-                ptr2.right.parent = ptr2;
-            }
+    private void delete(Node node) {
+        if (node.hasRight()) {
+            if (node.isLeftChild())
+                node.parent.left = node.right;
+            if (node.isRightChild())
+                node.parent.right = node.right;
+            node.right.parent = node.parent;
         }
+        if (node.isLeftChild())
+            node.parent.left = null;
+        else
+            node.parent.right = null;
+        node.clean();
     }
 
     @Override
@@ -244,8 +228,19 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
     @Override
     public ArrayList<T> postOrder() {
-        // TODO
-        return null;
+        if (isEmpty())
+            throw new EmptyTreeException();
+        ArrayList<T> output = new ArrayList<>();
+        postOrder(root, output::add);
+        return output;
+    }
+
+    private void postOrder(Node node, Consumer<T> output) {
+        if (node == null)
+            return;
+        postOrder(node.left, output);
+        postOrder(node.right, output);
+        output.accept(node.data);
     }
 
     public int size() {
@@ -268,12 +263,32 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             this.parent = null;
         }
 
-        private boolean isHasRight() {
+        private boolean hasRight() {
             return this.right != null;
         }
 
-        private boolean isHasLeft() {
+        private boolean hasLeft() {
             return this.left != null;
+        }
+
+        private boolean isLeftChild() {
+            return this.parent.left == this;
+        }
+
+        private boolean isRightChild() {
+            return this.parent.right == this;
+        }
+
+        private Node goLeft() {
+            return this.left;
+        }
+
+        private Node goRight() {
+            return this.right;
+        }
+
+        private Node goUp() {
+            return this.parent;
         }
 
         private boolean isLeafNode() {

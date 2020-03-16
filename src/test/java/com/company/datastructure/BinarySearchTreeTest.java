@@ -45,6 +45,20 @@ class BinarySearchTreeTest {
     }
 
     @Test
+    void givenEmptyTree_whenCallingPostOrder_thenThrowException() {
+        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
+        assertThrows(EmptyTreeException.class, tree::postOrder);
+    }
+
+    @Test
+    void givenNonEmptyTree_whenCallingPostOrder_thenSuccess() {
+        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
+        ArrayList<Integer> expected = convertToArrayList(DataProvider.getExpectedPostOrder());
+        ArrayList<Integer> actual = tree.postOrder();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void givenNullValue_whenCallingInsert_thenThrowException() {
         BinarySearchTree<Integer> tree = DataProvider.emptyTree();
         assertThrows(NullValueException.class, () -> tree.insert(null));
@@ -148,7 +162,6 @@ class BinarySearchTreeTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
     void givenExistingData_whenCallingDelete_thenSuccess(int data) {
-        // TODO fix this test,since it is'nt passed
         BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
         ArrayList<Integer> expected = convertToArrayListExcluding(DataProvider.expectedInOrderData(), data);
         tree.delete(data);
