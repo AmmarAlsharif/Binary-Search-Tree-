@@ -60,7 +60,7 @@ class BinarySearchTreeTest {
 
     @Test
     void givenNullValue_whenCallingInsert_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
+        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
         assertThrows(NullValueException.class, () -> tree.insert(null));
     }
 
