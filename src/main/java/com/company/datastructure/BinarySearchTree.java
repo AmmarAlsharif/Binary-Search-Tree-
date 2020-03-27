@@ -71,6 +71,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         return state.postOrder();
     }
 
+    @Override
     public int size() {
         return size;
     }
@@ -226,8 +227,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             return contains(root.right, data);
         }
 
-        // we need this method to determine the successor node
-        // when we delete a Node with 2 children
         private Node successor(Node current) {
             if (current.hasRight()) {
                 current = current.goRight();
@@ -248,8 +247,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             }
         }
 
-        // we need this method to delete the successor Node
-        // of the node that has 2 children
         private void delete(Node node) {
             if (node.hasRight()) {
                 if (node.isLeftChild())
@@ -265,8 +262,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             node.clean();
         }
 
-        // we need this function in successor function
-        private Node getNodeWithValue(Node node, T data) throws ValueNotFoundException {
+        private Node getNodeWithValue(Node node, T data) {
             if (node == null)
                 throw new ValueNotFoundException("Value \"" + data + "\" not found");
             if (data.compareTo(node.data) == 0)
