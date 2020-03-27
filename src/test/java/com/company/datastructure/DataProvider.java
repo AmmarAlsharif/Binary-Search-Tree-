@@ -6,6 +6,7 @@ public class DataProvider {
     private static final int[] expectedInOrder = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     private static final int[] expectedPreOrder = {10, 6, 5, 1, 2, 3, 4, 8, 7, 9, 13, 12, 11};
     private static final int[] expectedPostOrder = {4, 3, 2, 1, 5, 7, 9, 8, 6, 11, 12, 13, 10};
+    private static final BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
 
     static BinarySearchTree<Integer> treeOfIntegers() {
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
@@ -16,7 +17,7 @@ public class DataProvider {
     }
 
     static BinarySearchTree<Integer> emptyTree() {
-        return new BinarySearchTree<>();
+        return emptyTree;
     }
 
     static int[] expectedInOrderData() {

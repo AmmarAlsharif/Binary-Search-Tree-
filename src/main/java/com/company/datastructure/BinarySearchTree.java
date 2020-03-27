@@ -44,6 +44,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
     @Override
     public boolean contains(T data) {
+        if (data == null)
+            throw new NullValueException();
+        if (isEmpty())
+            throw new EmptyTreeException();
         return contains(root, data);
     }
 

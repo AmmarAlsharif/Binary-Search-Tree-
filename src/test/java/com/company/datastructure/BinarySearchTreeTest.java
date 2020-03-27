@@ -79,6 +79,17 @@ class BinarySearchTreeTest {
         assertThrows(DuplicateValueException.class, () -> tree.insert(data));
     }
 
+    @Test
+    void givenEmptyTree_whenCallingContains_thenThrowException() {
+        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
+        assertThrows(EmptyTreeException.class, () -> tree.contains(5));
+    }
+
+    @Test
+    void givenNullValue_whenCallingContains_thenThrowException() {
+        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
+        assertThrows(NullValueException.class, () -> tree.contains(null));
+    }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
