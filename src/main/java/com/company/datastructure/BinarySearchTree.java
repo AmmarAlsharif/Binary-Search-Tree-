@@ -274,21 +274,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         private T findSuccessor(T data) {
             Node current = getNodeWithValue(root, data);
-            if (current.hasRight()) {
-                current = current.goRight();
-                while (current.hasLeft()) {
-                    current = current.goLeft();
-                }
-                return current.data;
-            }
-            Node parent = current.parent;
-            while (parent != null) {
-                if (parent.left == current)
-                    return parent.left.data;
-                current = parent;
-                parent = parent.goUp();
-            }
-            throw new NoSuccessorException("Value \"" + data + "\" has no successor");
+            Node successor = successor(current);
+            if (successor == null)
+                throw new NoSuccessorException("Value \"" + data + "\" has no successor");
+            return successor.data;
         }
 
         private void inOrder(Node node, Consumer<T> output) {
