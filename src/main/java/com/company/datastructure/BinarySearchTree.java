@@ -114,9 +114,9 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
                     throw new DuplicateValueException();
 
                 if (data.compareTo(current.data) < 0)
-                    current = current.goLeft();
+                    current = current.left();
                 else
-                    current = current.goRight();
+                    current = current.right();
             }
             if (data.compareTo(parent.data) < 0) {
                 parent.left = new Node(data);
@@ -203,7 +203,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         public T min() {
             Node pointer = root;
             while (pointer.hasLeft()) {
-                pointer = pointer.goLeft();
+                pointer = pointer.left();
             }
             return pointer.data;
         }
@@ -212,7 +212,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
         public T max() {
             Node pointer = root;
             while (pointer.hasRight()) {
-                pointer = pointer.goRight();
+                pointer = pointer.right();
             }
             return pointer.data;
         }
@@ -229,9 +229,9 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         private Node successor(Node current) {
             if (current.hasRight()) {
-                current = current.goRight();
+                current = current.right();
                 while (current.hasLeft()) {
-                    current = current.goLeft();
+                    current = current.left();
                 }
                 return current;
             } else {
@@ -240,7 +240,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
                     if (parent.left == current) break;
                     else {
                         current = parent;
-                        parent = parent.goUp();
+                        parent = parent.parent();
                     }
                 }
                 return parent;
@@ -397,15 +397,15 @@ public class BinarySearchTree<T extends Comparable<T>> implements BinaryTree<T> 
             return this.parent.right == this;
         }
 
-        private Node goLeft() {
+        private Node left() {
             return this.left;
         }
 
-        private Node goRight() {
+        private Node right() {
             return this.right;
         }
 
-        private Node goUp() {
+        private Node parent() {
             return this.parent;
         }
 
