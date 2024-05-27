@@ -1,4 +1,3 @@
 package com.company.datastructure.exceptions;
 
-public class DuplicateValueException extends RuntimeException {
-}
+public class DuplicateValueException extends RuntimeException {}

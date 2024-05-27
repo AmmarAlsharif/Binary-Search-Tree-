@@ -1,4 +1,3 @@
 package com.company.datastructure.exceptions;
 
-public class NullValueException extends RuntimeException {
-}
+public class NullValueException extends RuntimeException {}
