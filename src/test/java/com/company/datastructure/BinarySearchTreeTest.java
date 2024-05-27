@@ -1,200 +1,234 @@
 package com.company.datastructure;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.company.datastructure.exceptions.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BinarySearchTreeTest {
 
+    private static final int[] TREE_INTEGERS = {10, 6, 8, 5, 9, 1, 2, 7, 3, 4, 13, 12, 11};
+    private static final List<Integer> expectedInOrder = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
+    private static final List<Integer> expectedPreOrder = List.of(10, 6, 5, 1, 2, 3, 4, 8, 7, 9, 13, 12, 11);
+    private static final List<Integer> expectedPostOrder = List.of(4, 3, 2, 1, 5, 7, 9, 8, 6, 11, 12, 13, 10);
+    private static final BinarySearchTree<Integer> emptyTree = new BinarySearchTree<>();
+    private final BinarySearchTree<Integer> tree = new BinarySearchTree<>();
 
-    @Test
-    void givenEmptyTree_whenCallingPreOrder_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, tree::preOrder);
-    }
-
-    @Test
-    void givenNonEmptyTree_whenCallingPreOrder_thenSuccess() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ArrayList<Integer> expected = convertToArrayList(DataProvider.getExpectedPreOrder());
-        ArrayList<Integer> actual = tree.preOrder();
-        assertEquals(expected, actual);
-    }
-
-
-    @Test
-    void givenEmptyTree_whenCallingInOrder_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, tree::inOrder);
-    }
-
-
-    @Test
-    void givenNonEmptyTree_whenCallingInOrder_thenSuccess() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ArrayList<Integer> expected = convertToArrayList(DataProvider.expectedInOrderData());
-        ArrayList<Integer> actual = tree.inOrder();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingPostOrder_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, tree::postOrder);
-    }
-
-    @Test
-    void givenNonEmptyTree_whenCallingPostOrder_thenSuccess() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ArrayList<Integer> expected = convertToArrayList(DataProvider.getExpectedPostOrder());
-        ArrayList<Integer> actual = tree.postOrder();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void givenNullValue_whenCallingInsert_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertThrows(NullValueException.class, () -> tree.insert(null));
-    }
-
-    @Test
-    void givenIntegers_whenCallingInsert_thenSuccess() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ArrayList<Integer> expected = convertToArrayList(DataProvider.expectedInOrderData());
-        ArrayList<Integer> actualOrderedIntegers = tree.inOrder();
-        assertEquals(expected, actualOrderedIntegers);
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
-    void givenDuplicateValue_whenCallingInsert_thenThrowException(int data) {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertThrows(DuplicateValueException.class, () -> tree.insert(data));
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingContains_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, () -> tree.contains(5));
-    }
-
-    @Test
-    void givenNullValue_whenCallingContains_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertThrows(NullValueException.class, () -> tree.contains(null));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
-    void givenExistingData_whenCallingContains_thenReturnAsExpected(int data) {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertTrue(tree.contains(data));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {15, 14, 16, 17, 18, 19})
-    void givenExcludedData_whenCallingContains_thenReturnAsExpected(int data) {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertFalse(tree.contains(data));
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingMin_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, tree::min);
-    }
-
-    @Test
-    void givenValidTree_whenCallingMin_thenReturnAsExpected() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertEquals(1, tree.min());
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingMax_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, tree::max);
-    }
-
-    @Test
-    void givenValidTree_whenCallingMax_thenReturnAsExpected() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertEquals(13, tree.max());
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingSuccessor_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, () -> tree.successor(5));
-    }
-
-    @Test
-    void givenNull_whenCallingSuccessor_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        assertThrows(IllegalArgumentException.class, () -> tree.successor(null));
-    }
-
-    @Test
-    void givenDataWithNoSuccessor_whenCallingSuccessor_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
-                () -> tree.successor(13));
-        assertEquals("Value \"13\" has no successor", thrown.getMessage());
-    }
-
-    @Test
-    void givenNoneExistingData_whenCallingSuccessor_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successor(14));
-        assertEquals("Value \"14\" not found", thrown.getMessage());
-    }
-
-    @Test
-    void givenEmptyTree_whenCallingDelete_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.emptyTree();
-        assertThrows(EmptyTreeException.class, () -> tree.delete(2));
-    }
-
-    @Test
-    void givenNoneExistingData_whenCallingDelete_thenThrowException() {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class,
-                () -> tree.delete(14));
-        assertEquals("Value \"14\" not found", thrown.getMessage());
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
-    void givenExistingData_whenCallingDelete_thenSuccess(int data) {
-        BinarySearchTree<Integer> tree = DataProvider.treeOfIntegers();
-        ArrayList<Integer> expected = convertToArrayListExcluding(DataProvider.expectedInOrderData(), data);
-        tree.delete(data);
-        ArrayList<Integer> actualValues = tree.inOrder();
-        assertEquals(expected, actualValues);
-    }
-
-    private ArrayList<Integer> convertToArrayList(int[] data) {
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int datum : data) {
-            list.add(datum);
+    @BeforeEach
+    void init(){
+        for (int data : TREE_INTEGERS) {
+            tree.insert(data);
         }
-        return list;
     }
 
-    private ArrayList<Integer> convertToArrayListExcluding(int[] data, int excludedValue) {
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int datum : data) {
-            if (datum == excludedValue)
-                continue;
-            list.add(datum);
+    @Nested
+    class PreOrder {
+
+        @Test
+        void shouldReturnCorrectPreOrder() {
+            ArrayList<Integer> actual = tree.preOrder();
+            assertEquals(expectedPreOrder, actual);
         }
-        return list;
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty(){
+            assertThrows(EmptyTreeException.class, emptyTree::preOrder);
+        }
+    }
+
+    @Nested
+    class InOrder {
+
+        @Test
+        void shouldReturnCorrectInOrder() {
+            ArrayList<Integer> actual = tree.inOrder();
+            assertEquals(expectedInOrder, actual);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, emptyTree::inOrder);
+        }
+    }
+
+    @Nested
+    class PostOrder {
+
+        @Test
+        void shouldReturnCorrectPostOrder() {
+            ArrayList<Integer> actual = tree.postOrder();
+            assertEquals(expectedPostOrder, actual);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, emptyTree::postOrder);
+        }
+    }
+
+
+    @Nested
+    class Insert {
+
+        @Test
+        void shouldInsertDataToTree() {
+            BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+            for (int data : TREE_INTEGERS) {
+                tree.insert(data);
+            }
+            ArrayList<Integer> actualOrderedIntegers = tree.inOrder();
+            assertEquals(expectedInOrder, actualOrderedIntegers);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenValueIsNull(){
+            assertThrows(NullValueException.class, () -> tree.insert(null));
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+        void shouldThrowExceptionOnDuplicateValue(int data) {
+            assertThrows(DuplicateValueException.class, () -> tree.insert(data));
+        }
+
+    }
+
+    @Nested
+    class Contains {
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+        void shouldReturnTrueWhenValueIsFound(int data) {
+            assertTrue(tree.contains(data));
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {15, 14, 16, 17, 18, 19})
+        void shouldReturnFalseWhenValueIsNotFound(int data) {
+            assertFalse(tree.contains(data));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, ()-> emptyTree.contains(5));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenValueIsNull() {
+            assertThrows(NullValueException.class, () -> tree.contains(null));
+        }
+    }
+
+
+    @Nested
+    class Min {
+
+        @Test
+        void shouldReturnMinValue() {
+            assertEquals(1, tree.min());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, emptyTree::min);
+        }
+    }
+
+    @Nested
+    class Max {
+
+        @Test
+        void shouldReturnMaxValue() {
+            assertEquals(13, tree.max());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, emptyTree::max);
+        }
+
+    }
+
+    @Nested
+    class Successor {
+
+        @ParameterizedTest
+        @MethodSource("successorTestData")
+        void shouldReturnSuccessorForTheGivenValue(int data, int expectedSuccessor) {
+            assertEquals(expectedSuccessor, tree.successor(data));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTheGivenValueIsNotFoundInTheTree() {
+            ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class, () -> tree.successor(14));
+            assertEquals("Value \"14\" not found", thrown.getMessage());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTheGivenValueHasNoSuccessor() {
+            NoSuccessorException thrown = assertThrows(NoSuccessorException.class,
+              () -> tree.successor(13));
+            assertEquals("Value \"13\" has no successor", thrown.getMessage());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenValueIsNull() {
+            assertThrows(IllegalArgumentException.class, () -> tree.successor(null));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, () -> emptyTree.successor(5));
+        }
+
+        static Stream<Arguments> successorTestData(){
+            return Stream.of(
+                  Arguments.of(5,6),
+                  Arguments.of(7,8),
+                  Arguments.of(9,10),
+                  Arguments.of(10,11),
+                  Arguments.of(11,12),
+                  Arguments.of(12,13)
+              );
+        }
+
+    }
+
+
+    @Nested
+    class Delete {
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+        void shouldDeleteDataFromTree(int data) {
+            ArrayList<Integer> expected = new ArrayList<>(expectedInOrder);
+            expected.remove((Integer) data);
+            tree.delete(data);
+            ArrayList<Integer> actualValues = tree.inOrder();
+            assertEquals(expected, actualValues);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenValueIsNotFound() {
+            ValueNotFoundException thrown = assertThrows(ValueNotFoundException.class,
+              () -> tree.delete(14));
+            assertEquals("Value \"14\" not found", thrown.getMessage());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenTreeIsEmpty() {
+            assertThrows(EmptyTreeException.class, () -> emptyTree.delete(2));
+        }
+
     }
 }
